@@ -2,6 +2,7 @@ import numpy as np
 from scipy.integrate import trapz, cumtrapz
 
 from main.Analysis import SignalProcessing
+from main.Calculators import BetaInt
 from main.Calculators.IR_calibration import IR_calibration
 from main.Utilities.TwoDimVec import TwoDimVec
 
@@ -136,84 +137,11 @@ def final_calculation(CA):
 
     if CA.thermal_analysis:
         CA.IR_temperature = IR_calibration(CA.IR_CAL.y, CA.IR_CAL.x,
-                                             CA.TC_CAL.y, CA.TC_CAL.x,
-                                             CA.IR_EXP.y)
+                                           CA.TC_CAL.y, CA.TC_CAL.x,
+                                           CA.IR_EXP.y)
 
         print("beta_int calculation starting...")
-        #   beta_int calculation:
-        rho = CA.density
-        Cp = CA.heat_capacity
-
-        """
-            The plastic strain is the strain after the elastic region. 
-            A cropping should be done to obtain this area.
-        """
-
-        length = len(true_stress)
-        from scipy.stats import linregress
-
-        #   Find sigma_y (yield point):
-        """
-            To find sigma_y we perform a linear regression repeatedly, 
-            each iteration enlarging the size of the vector upon which 
-            the regression os performed. When the value of r^2 > 0.9
-            we can assume we found the elastic zone (since it is linear). 
-
-            Once r^2 > 0.9 is reached we start searching for our cropping point:
-            this is where we leave the elastic zone and the curve starts to become
-            less inclined. Once we enter the r^2 < 0.9 zone we can approximate that 
-            this is where the plastic zone begins. 
-        """
-        crop_idx = 0
-        point_searching_activated = False
-        for i in range(10, length):
-
-            _, _, r, _, _ = linregress(true_strain[0:i], true_stress[0:i])
-
-            if 0.9 < r ** 2 and not point_searching_activated:
-                point_searching_activated = True
-
-            if r ** 2 < 0.9 and point_searching_activated:
-                crop_idx = i
-                print("\t...Yield point found")
-                break
-
-        plastic_stress = true_stress[crop_idx:]
-        plastic_strain = true_strain[crop_idx:]
-
-        """
-            uncomment to see (graphically) the actual cropping with respect
-            to the original stress - strain curve.
-
-            plt.figure()
-            plt.plot(true_strain, true_stress)
-            plt.plot(plastic_strain, plastic_stress)
-            plt.show()
-        """
-
-        #   Make the strain start at zero:
-        de = plastic_strain[0]
-        CA.plastic_strain = [X - de for X in plastic_strain]
-        CA.plastic_stress = plastic_stress
-        CA.IR_temperature = CA.IR_temperature[crop_idx:]
-        CA.plastic_time = CA.time[crop_idx:]
-        dt = CA.time[0]
-        CA.plastic_time = [X - dt for X in CA.plastic_time]
-
-        beta_int = []
-        Wp = []
-        for i in range(len(plastic_stress)):
-            Wp_i = trapz(plastic_stress[0:i], plastic_strain[0:i])
-            Wp.append(Wp_i)
-            beta_int.append(rho * Cp * CA.IR_temperature[i] / Wp_i / (10 ** 6))  # [Stress is in MPa thus / 10^6]
-
-        CA.beta_int = beta_int
-        CA.Wp = Wp
-
-        slope, intercept, _, _, _ = linregress(Wp, CA.IR_temperature[0:len(plastic_stress)])
-        CA.LR_T_Wp = [intercept + slope * X for X in Wp]
-        CA.LR_T_Wp_intercept = intercept
-        CA.LR_T_Wp_slope = slope
+        BetaInt.beta_int(CA, true_strain, true_stress)
         print("beta_int calculation CMPLT.")
 
     return True

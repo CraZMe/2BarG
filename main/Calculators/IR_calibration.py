@@ -6,10 +6,6 @@ from .k_temp import k_temp
 
 def IR_calibration(volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC_CAL, volt_IR_EXP):
     print("IR Calibration Initialized...")
-    Num_Test = 1  # number of calibration tests done.
-    Num_pnt = 5000  # number of recorded points - for better code performance.
-    Cp = 500  # heat capacity for beta [J/(kg*C)]
-    rho = 8000  # density for beta [kg/m^3]
     HCT_sort = sorted(volt_IR_CAL, reverse=True)
 
     #   correct signal to zero by first 4 maximas and minimas
