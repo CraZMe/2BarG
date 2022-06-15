@@ -20,6 +20,4 @@
 * easygui
 
 We packaged 2BarG using PyInstaller, and a zipped file with an excecutable of the current version can be found at https://rittel.group/downloads/.
-#� �2�B�a�r�G�
-�
-�
+
