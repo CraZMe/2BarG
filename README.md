@@ -8,8 +8,7 @@
 
 Furthermore, analysis of thermal effects is being developed and will be available in version 1.1. This, includes the usage of user inputted calibration files to create a mechanical - thermal viewpoint of the split Hopkinson pressure bar. 
 
-**Versions**
-
+**Versions:**
 The first version's (1.0.0) code is available in my other repository - 2BarG_V1.
 The current version (1.1.0) has been rearranged in a more modular architecture, which can be viewed schematically in the included Flow hart. 
  
