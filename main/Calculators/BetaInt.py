@@ -1,9 +1,10 @@
+import numpy as np
 from scipy.integrate import trapz
 
-from main.Calculators import OneDimInterp
+from main.Calculators import OneDimInterp, LinearRegression
 
 
-def beta_int(CA, true_strain, true_stress):
+def beta_int(update_logger, CA, true_strain, true_stress):
     #   beta_int calculation:
     rho = CA.density
     Cp = CA.heat_capacity
@@ -39,7 +40,7 @@ def beta_int(CA, true_strain, true_stress):
 
         if r ** 2 < 0.9 and point_searching_activated:
             crop_idx = i
-            print("\t...Yield point found")
+            update_logger("...Yield point found")
             break
 
     plastic_stress = true_stress[crop_idx:]
@@ -83,10 +84,13 @@ def beta_int(CA, true_strain, true_stress):
         Wp.append(Wp_i)
         beta_int.append(rho * Cp * CA.IR_temperature[i] / Wp_i / (10 ** 6))  # [Stress is in MPa thus / 10^6]
 
-    CA.beta_int = beta_int
-    CA.Wp = Wp
+    #   Search for maximum temperature:
+    max_temp_idx = np.argmax(CA.IR_temperature)
 
-    slope, intercept, _, _, _ = linregress(Wp, CA.IR_temperature)
-    CA.LR_T_Wp = [intercept + slope * X for X in Wp]
-    CA.LR_T_Wp_intercept = intercept
-    CA.LR_T_Wp_slope = slope
+    CA.beta_int = beta_int
+    CA.Wp = Wp[:max_temp_idx]
+
+    CA.LR_T_Wp,\
+    CA.LR_T_Wp_intercept,\
+    CA.LR_T_Wp_slope = LinearRegression.get_linear_regression(CA.Wp, CA.IR_temperature[:max_temp_idx])
+

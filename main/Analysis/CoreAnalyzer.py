@@ -15,7 +15,7 @@ from main.Utilities.TwoDimVec import TwoDimVec
 
 class CoreAnalyzer:
 
-    def __init__(self, path, mode, specimen_mode, thermal_analysis, parameters, spacing, smooth_value, bar_num):
+    def __init__(self, user_interface, path, mode, specimen_mode, thermal_analysis, parameters, spacing, smooth_value, bar_num):
         self.path_folder = path
         self.mode = mode
         self.specimen_mode = specimen_mode
@@ -24,7 +24,7 @@ class CoreAnalyzer:
         self.spacing = spacing
         self.smooth_value = smooth_value
         self.bar_num = bar_num
-
+        self.user_interface = user_interface
         self.tpp = int
         self.exp_num = 1
         self.damp_f = 10 ** (-3)  # New variable to be used in the future (future...future......future...)
@@ -48,6 +48,7 @@ class CoreAnalyzer:
         """
             Configures all given parameters into the Signal Processing Class
         """
+        self.user_interface.update_logger("Configuring Parameters...")
         self.path_folder = path_folder
         self.poisson_ratio = poisson_ratio
 
@@ -66,14 +67,13 @@ class CoreAnalyzer:
             self.heat_capacity = float(parameters[13][1])
 
         except:
-            print("Density & Heat Capacity not configured."
-                  "\n\t Ignore this error for classic SHPB experiments (no thermal analysis).")
+            self.user_interface.update_logger("Density & Heat Capacity not configured."
+                  "Ignore this error for classic SHPB experiments (no thermal analysis).")
 
         self.prominence_percent = prominence_percent
         self.auto_open_report = auto_open_report
         self.smooth_value = smooth_value
 
-        print("Parameter configuration in Core Analyzer CMPLT.")
 
     def load_experiments(self, exp_num, path_folder, mode, specimen_mode, file_type, thermal_analysis):
         """
@@ -84,7 +84,7 @@ class CoreAnalyzer:
             It keeps an "og" version - an original version of the vectors
              to be untouched by any processing that follows.
         """
-
+        self.user_interface.update_logger("Loading Experiments in Core Analyzer...")
         self.mode = mode
         self.specimen_mode = specimen_mode
         self.thermal_analysis = thermal_analysis
@@ -103,40 +103,6 @@ class CoreAnalyzer:
                                     [IR_CAL[i][0] for i in range(len(IR_CAL))])
             self.TC_CAL = TwoDimVec([TC_CAL[i][1] for i in range(len(TC_CAL))],
                                     [TC_CAL[i][0] for i in range(len(TC_CAL))])
-        """
-        if vector_incid != []:
-            for i in range(len(vector_incid)):
-                try:
-                    self.volt_incid.append(float(vector_incid[i][0]))
-                    self.time_incid.append(float(vector_incid[i][1]))
-
-                    self.volt_trans.append(float(vector_trans[i][0]))
-                    self.time_trans.append(float(vector_trans[i][1]))
-
-                    if thermal_analysis:
-                        self.volt_IR_EXP.append(float(vector_IR_EXP[i][0]))
-                        self.time_IR_EXP.append(float(vector_IR_EXP[i][1]))
-
-                except Exception as exception:
-                    print(exception)
-        
-            # zeroing will make the two voltage vectors start from zero.
-            SignalProcessing.zeroing([self.volt_incid, self.volt_trans])
-
-            if thermal_analysis:
-                for i in range(len(vector_IR_CAL)):
-                    try:
-                        self.volt_IR_CAL.append(float(vector_IR_CAL[i][0]))
-                        self.time_IR_CAL.append(float(vector_IR_CAL[i][1]))
-                        self.volt_TC_CAL.append(float(vector_TC_CAL[i][0]))
-                        self.time_TC_CAL.append(float(vector_TC_CAL[i][1]))
-
-                    except:
-                        continue
-
-                # zeroing will make the two voltage vectors start from zero.
-                SignalProcessing.zeroing([self.volt_IR_EXP])
-            """
 
         # Extract Time Per Point from the data.
         self.tpp = self.incid.x[1] - self.incid.x[0]
@@ -163,6 +129,8 @@ class CoreAnalyzer:
             """
                 Manual cropping analysis
             """
+            self.user_interface.update_logger("Manual Cropping CMPLT.")
+
             text = """Please Select 3 points: 
                    1) Incident's start, 2) Incident's end,  3) Reflected's start.
                     To delete the last selected point, press backspace. 
@@ -194,32 +162,32 @@ class CoreAnalyzer:
 
             if purpose == "single":
                 #   analyze only one given experiment
-                self.single_analysis()
+                return self.single_analysis()
 
             elif purpose == "all":
                 # Analyze all experiments
-                self.analyze_all()
+                return self.analyze_all()
 
         elif sp_mode == "Automatic":
             """
                 Automatic cropping analysis
             """
-            print("Automatic Cropping Initialized...")
+            self.user_interface.update_logger("Automatic Cropping Initialized...")
             #   Analyze only one given experiment
-            incid, trans, refle, IR_EXP = SignalProcessing.auto_crop(self)
+            incid, trans, refle, IR_EXP = SignalProcessing.auto_crop(self.user_interface.update_logger, self)
             self.incid = self.incid.create_absolute_copy(incid)
             self.trans = self.trans.create_absolute_copy(trans)
             self.refle = self.refle.create_absolute_copy(refle)
             self.IR_EXP = self.IR_EXP.create_absolute_copy(IR_EXP)
 
-            self.single_analysis()
+            return self.single_analysis()
 
     def single_analysis(self):
-        corr_incident, corr_transmitted, corr_reflected = dispersion_correction(self)
+        corr_incident, corr_transmitted, corr_reflected = dispersion_correction(self.user_interface.update_logger, self)
 
         corr_incident, corr_transmitted, corr_reflected, \
         self.incid.x, self.trans.x, self.refle.x \
-            = SignalProcessing.cross_correlate_signals(corr_incident, corr_transmitted,
+            = SignalProcessing.cross_correlate_signals(self.user_interface.update_logger, corr_incident, corr_transmitted,
                                                        corr_reflected,
                                                        self.incid.x, self.trans.x, self.refle.x,
                                                        self.smooth_value)
@@ -227,7 +195,8 @@ class CoreAnalyzer:
         self.corr_trans.y = corr_transmitted
         self.corr_refle.y = corr_reflected
 
-        valid = FinalCalculation.final_calculation(self)
+
+        valid = FinalCalculation.final_calculation(self.user_interface.update_logger, self)
         if valid:
             if self.thermal_analysis:
                 from main.Handlers.OutputHandler import save_data_and_report_thermal
@@ -235,12 +204,13 @@ class CoreAnalyzer:
             else:
                 from main.Handlers.OutputHandler import save_data_and_report
                 save_data_and_report(self, self.exp_num, self.parameters, self.bar_num)
+            self.user_interface.update_logger("Analysis CMPLT.")
             return True
 
         return False
 
     def analyze_all(self):
-        self.corr_incid.y, self.corr_trans.y, self.corr_refle.y = dispersion_correction(self)
+        self.corr_incid.y, self.corr_trans.y, self.corr_refle.y = dispersion_correction(self.user_interface.update_logger, self)
         self.corr_incid.x = self.incid.x.copy()
         self.corr_trans.x = self.trans.x.copy()
         self.corr_refle.x = self.refle.x.copy()

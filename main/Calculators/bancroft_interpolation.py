@@ -10,7 +10,7 @@ def bancroft_interpolation(poisson_ratio):
     """
     p_r = poisson_ratio  # The bar's Poisson's ratio NEEDS TO BE ADDED
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    bancrofts_data = loadtxt("bancrofts_data.txt")
+    bancrofts_data = loadtxt("../ProgramFiles/bancrofts_data.txt")
 
     rwr = zeros(26)  # Radius - Wavelength Ratio (RWR)
     phase_velocities = zeros(26)

@@ -4,8 +4,8 @@ from scipy.optimize import curve_fit
 from .k_temp import k_temp
 
 
-def IR_calibration(volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC_CAL, volt_IR_EXP):
-    print("IR Calibration Initialized...")
+def IR_calibration(update_logger, volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC_CAL, volt_IR_EXP):
+    update_logger("IR Calibration Initialized...")
     HCT_sort = sorted(volt_IR_CAL, reverse=True)
 
     #   correct signal to zero by first 4 maximas and minimas
@@ -69,7 +69,7 @@ def IR_calibration(volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC_CAL, volt_IR_E
             HCT_time = [t - time_IR_CAL[0] for t in HCT_time]
             TC_time = [t - time_TC_CAL[0] for t in TC_time]
 
-            print("\t...Cropping Complete")
+            update_logger("...Cropping Complete")
             break
 
     #   Calculate a double exponential fit for the TC - HCT graph:
@@ -78,30 +78,30 @@ def IR_calibration(volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC_CAL, volt_IR_E
         return a * exp(b * x) + c * exp(d * x)
 
     P0 = (150, 0.04, -130, -0.2)
-    """
+
     coeff, _ = curve_fit(double_exponential_fit, HCT_envelope, TC, p0=P0, maxfev=5000)
     c1 = coeff[0]
     c2 = coeff[1]
     c3 = coeff[2]
     c4 = coeff[3]
     
-    print("\t...Curve Fitting 1 CMPLT")
+    update_logger("...Curve Fitting 1 CMPLT")
     #   Calculate R^2 of the fit:
     def_HCT = [double_exponential_fit(X, c1, c2, c3, c4) for X in HCT_envelope]
-    """
+
     # residuals = TC - def_HCT
     # R_squared = sum((residuals ** 2) / def_HCT)
 
     Volt2Temp = k_temp(TC)
-    print("\t...K Temp Configured (Volt2Temp)")
+    update_logger("...K Temp Configured (Volt2Temp)")
     coeff, _ =curve_fit(double_exponential_fit, HCT_envelope, Volt2Temp, p0=P0, maxfev=5000)
     d1 = coeff[0]
     d2 = coeff[1]
     d3 = coeff[2]
     d4 = coeff[3]
 
-    print("\t...Curve Fitting 2 CMPLT with function (Volt -> Temperature):")
-    print("\t\tT(v)" + str(d1) + " * exp {" + str(d2) + " * v} + " + str(d3) + " * exp {" + str(d4) + " * v}")
+    update_logger("...Curve Fitting 2 CMPLT with function (Volt -> Temperature):")
+    update_logger("T(v) = " + str(d1) + " * exp {" + str(d2) + " * v} + " + str(d3) + " * exp {" + str(d4) + " * v}")
 
     #   Calculate R^2 of the fit:
     #   def_HCT = [double_exponential_fit(X, c1, c2, c3, c4) for X in HCT_envelope]
@@ -112,5 +112,5 @@ def IR_calibration(volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC_CAL, volt_IR_E
     zero_IR_temperature = mean(IR_temperature[1:50])
     IR_temperature = [T - zero_IR_temperature for T in IR_temperature]
 
-    print("IR Calibration CMPLT.")
+    update_logger("IR Calibration CMPLT.")
     return IR_temperature

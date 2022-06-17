@@ -68,10 +68,8 @@ def manual_crop(time_ax, voltage, text, wave):
         #   Ginput is a dinosaur. It's bad for use and crushes instantly inside a GUI.
         exit()
 
-    print("Manual Cropping CMPLT.")
 
-
-def auto_crop(CA):
+def auto_crop(update_logger, CA):
     """
         Automatic cropping of the signals through peak detection.
 
@@ -89,7 +87,7 @@ def auto_crop(CA):
     #   A softer smoothing is applied on the transmitted signal since it is more sensitive than the incident signal:
     sav_trans = savgol_filter(CA.trans.y, CA.smooth_value - 50, 3)
 
-    print("\t...detecting signal peaks with Sav - Gol filter with "
+    update_logger("\n...detecting signal peaks with Sav - Gol filter with "
           + str(CA.smooth_value) + " window length (Curve Smoothing).")
 
     #   Create absolute valued signals:
@@ -120,7 +118,7 @@ def auto_crop(CA):
         prominence -= max_trans / 200
         peaks_trans, _ = find_peaks(abs_trans, prominence=prominence)
 
-    print("\t...Peaks detected in both signals. ")
+    update_logger("\n...Peaks detected in both signals. ")
     #   The mode changes sign in some calculation, so a constant of 1 or -1 will be useful.
     if CA.mode == "compression":
         K = 1
@@ -207,18 +205,18 @@ def auto_crop(CA):
         trans = TwoDimVec(time_trans, vcc_trans)
         refle = TwoDimVec(time_reflected, vcc_reflected)
         IR_EXP = TwoDimVec(time_IR_EXP, volt_IR_EXP)
-        print("Automatic Cropping CMPLT.")
+        update_logger("\nAutomatic Cropping CMPLT.")
         return incid, trans, refle, IR_EXP
 
     incid = TwoDimVec(time_incid, vcc_incid)
     trans = TwoDimVec(time_trans, vcc_trans)
     refle = TwoDimVec(time_reflected, vcc_reflected)
     IR_EXP = TwoDimVec()
-    print("Automatic Cropping CMPLT.")
+    update_logger("\nAutomatic Cropping CMPLT.")
     return incid, trans, refle, IR_EXP
 
 
-def mean_of_signal(signal, prominence_percent, mode, spacing):
+def mean_of_signal(update_logger, signal, prominence_percent, mode, spacing):
     """
         Calculate the mean value of the signal.
         (analytically this should be the value of the step).
@@ -272,8 +270,8 @@ def mean_of_signal(signal, prominence_percent, mode, spacing):
     return mean_value
 
 
-def cross_correlate_signals(incident, transmitted, reflected, time_incid, time_trans, time_reflected, smooth_value):
-    print("Signal cross - corelation Initialized...")
+def cross_correlate_signals(update_logger, incident, transmitted, reflected, time_incid, time_trans, time_reflected, smooth_value):
+    update_logger("\nSignal cross - corelation Initialized...")
     """
         This function uses Cross - Correlation to fix the given signals on each other.
         The "time_2" vector is the time vector that corresponds to the given "signal_2".
@@ -360,7 +358,7 @@ def cross_correlate_signals(incident, transmitted, reflected, time_incid, time_t
         signal_3 = reflected[correlated_position:]
 
         for i in range(len(time_3)):
-            time_2[i] -= correlated_time
+            time_2[i] -= correlated_time / 2
             time_3[i] -= correlated_time
 
         incident = signal_1
@@ -370,7 +368,7 @@ def cross_correlate_signals(incident, transmitted, reflected, time_incid, time_t
     time_incid = time_1
     time_trans = time_2
     time_reflected = time_3
-    print("Cross - Correlation CMPLT.")
+    update_logger("\nCross - Correlation CMPLT.")
     return incident, transmitted, reflected, time_incid, time_trans, time_reflected
 
 

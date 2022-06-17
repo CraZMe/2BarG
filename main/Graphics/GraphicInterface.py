@@ -1,3 +1,5 @@
+from kivymd.uix.list import OneLineListItem
+
 import main.Graphics.GuiTabsKV as tabs
 
 from main.Handlers import FileHandler
@@ -81,7 +83,7 @@ class UserInterface(MDApp):
         else:
             self.experiment_menu_items = []
 
-        self.CA = CoreAnalyzer.CoreAnalyzer(self.path_folder, self.mode, self.specimen_mode,
+        self.CA = CoreAnalyzer.CoreAnalyzer(self, self.path_folder, self.mode, self.specimen_mode,
                                             self.thermal_analysis, self.parameters,
                                             self.spacing, self.smooth_value, self.bar_num)
         #   Cropping mode is set to automatic as default:
@@ -107,6 +109,8 @@ class UserInterface(MDApp):
         3. Choose your experiment mode (compression / tension) and your cropping mode (automatic or manual). 
         4. Choose which experiment to analyse using the "Choose Experiment button", or analyse all of them.
         """
+
+        self.logger_text = "2BarG Initialized."
 
     def set_data(self):
         """
@@ -233,7 +237,6 @@ class UserInterface(MDApp):
                                                    self.thermal_analysis)
 
             if valid_files:
-                print("Loaded files are valid. \nConfiguring parameters...")
                 try:
                     self.CA.configure_parameters(self.parameters,
                                                  self.path_folder,
@@ -242,23 +245,23 @@ class UserInterface(MDApp):
                                                  self.auto_open_report,
                                                  self.smooth_value)
                 except:
-                    print("Parameter configuration FAILED.")
+                    self.update_logger("Parameter configuration FAILED.")
                     self.error_message()
 
                 #   Analyze experiment files:
                 valid = self.CA.analyze(purpose, exp_num, self.sp_mode, self.parameters, self.spacing, self.bar_num)
 
                 if not valid:
-                    print("Analysis Failed")
+                    self.update_logger("Analysis Failed")
                     self.error_message()
 
             else:
-                print("Loaded files are not valid.")
+                self.update_logger("\nLoaded files are not valid.")
                 self.error_message()
 
         except Exception as e:
-            print("Something went wrong, please observe the following error:")
-            print(e)
+            self.update_logger("Something went wrong: \n")
+            self.update_logger(str(e))
             self.error_message()
 
     def analyse_all_experiments(self):
@@ -281,7 +284,7 @@ class UserInterface(MDApp):
                         errors.append(i + 1)
                 except Exception as e:
                     errors.append(i + 1)
-                    print(e)
+                    self.update_logger("\n" + str(e))
 
             if len(errors) != 0:
                 # open a dialog if some experiments were corrupt.
@@ -373,6 +376,17 @@ class UserInterface(MDApp):
                                              self.auto_open_report,
                                              self.smooth_value)
 
+    def update_logger(self, text):
+        new_log = OneLineListItem(text=text, font_style='Caption', on_release=lambda _: self.show_log_dialog(text))
+        self.root.ids.tabs.get_slides()[2].ids.logger_list.add_widget(new_log)
+
+    def show_log_dialog(self, text):
+        dialog = MDDialog(title='Expanded Logger Message:',
+                          text=text,
+                          size_hint=(0.4, 1),
+                          radius=[20, 7, 20, 7])
+        dialog.open()
+
     def ButtonAction_set_path_folder(self):
         path = PathHandler.choose_path()
         try:
@@ -385,13 +399,13 @@ class UserInterface(MDApp):
         try:
             FileHandler.select_data_file(signal_name, self.path_folder, self.file_type)
         except Exception as e:
-            print(e)
+            self.update_logger(str(e))
 
     def ButtonAction_save_parameters_file(self):
         try:
             FileHandler.save_parameters_file(self.parameters)
         except Exception as e:
-            print(e)
+            self.update_logger(str(e))
 
     def ButtonAction_update_parameter(self, data_type, parameter_index, instance):
         #   Update the parameter of given text field.
@@ -411,7 +425,7 @@ class UserInterface(MDApp):
                 if data_type == "prominence":
                     self.prominence_percent = int(round(float(instance.text))) / 100
         except Exception as e:
-            print(e)
+            self.update_logger(str(e))
 
     def ButtonAction_set_parameters_as_default(self):
         # Saves the current parameters (experiment_data, specimen_data ..) in the defaults file.
@@ -439,7 +453,7 @@ class UserInterface(MDApp):
             self.root.ids.tabs.get_slides()[2].ids.heat_capacity.helper_text = "Default value: {}".format(
                 self.parameters[13][1])
         except Exception as e:
-            print(e)
+            self.update_logger(str(e))
 
     def ButtonAction_change_auto_open_report(self):
         if not self.auto_open_report:
@@ -451,7 +465,7 @@ class UserInterface(MDApp):
         try:
             FileHandler.load_parameters_file(self.parameters)
         except Exception as e:
-            print(e)
+            self.update_logger(str(e))
 
     def ButtonAction_show_data(self):
         #   opens a dialog with the current parameters.
@@ -487,7 +501,7 @@ class UserInterface(MDApp):
             else:
                 self.tap_target_view.stop()
         except Exception as e:
-            print(e)
+            self.update_logger(str(e))
 
     def ButtonAction_change_bar_num(self):
         if self.bar_num == 1:
@@ -545,7 +559,7 @@ class UserInterface(MDApp):
             FileHandler.update_txt_file(self.parameters, "ProgramFiles/defaults.TwoBarG", self.owd)
 
         except Exception as e:
-            print(e)
+            self.update_logger(str(e))
 
     def ButtonAction_change_theme(self):
         active = self.root.ids.tabs.get_slides()[2].ids.dark_mode.active
@@ -607,4 +621,10 @@ class UserInterface(MDApp):
             self.curve_smoothing_tap_target.start()
         else:
             self.curve_smoothing_tap_target.stop()
+
+    def toggle_view_logger(self):
+        if self.root.ids.tabs.get_slides()[2].ids.logger_card.opacity == 1:
+            self.root.ids.tabs.get_slides()[2].ids.logger_card.opacity = 0
+        else:
+            self.root.ids.tabs.get_slides()[2].ids.logger_card.opacity = 1
 

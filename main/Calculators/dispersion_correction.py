@@ -5,14 +5,14 @@ from .bancroft_interpolation import bancroft_interpolation
 from .phase_velocity_calculation import phase_velocity_calculation
 
 
-def dispersion_correction(CA):
+def dispersion_correction(update_logger, CA):
     """
         This function corrected the signals due to their dispersion in the bar.
         This is done with Fourier transforms (FFT -> Correction -> Inverse FFT)
         Input:  CoreAnalyzer (CA) object
         Output: Corrected signals (incident, reflected, transmitted)
     """
-    print("Dispersion Correction Initialized...")
+
     vcc_incid, vcc_trans, vcc_reflected = CA.incid.y, CA.trans.y, CA.refle.y
     bar_diameter, tpp, sound_velocity, poisson_ratio = CA.bar_diameter, CA.tpp, CA.sound_velocity, CA.poisson_ratio
     first_gage, second_gage = CA.first_gage, CA.second_gage
@@ -42,7 +42,7 @@ def dispersion_correction(CA):
     r_phase = []
     t_phase = []
 
-    print("\t...obtaining Fourier components")
+    update_logger("...obtaining Fourier components")
     for i in range(n // 2):
         #   Calculating (by interpolation) the phase velocity of each Fourier component.
         velocities[i] = phase_velocity_calculation(frequencies[i], bar_radius, sound_velocity, ratios)
@@ -84,7 +84,7 @@ def dispersion_correction(CA):
         ftr.append(exp(1j * r_phase[i]) * fft_reflected[i])
         ftt.append(exp(1j * t_phase[i]) * fft_trans[i])
 
-    print("\t...Fourier components obtained, performing inverse Fourier transform...")
+    update_logger("...Fourier components obtained, performing inverse Fourier transform...")
     # Inverse Fourier transform
     clean_incident = real(ifft(fti, axis=0))
     clean_reflected = real(ifft(ftr, axis=0))
@@ -96,5 +96,5 @@ def dispersion_correction(CA):
     corrected_reflected = clean_reflected * exp((+1) * damp_f * first_gage)
     corrected_transmitted = clean_transmitted * exp((+1) * damp_f * second_gage)
 
-    print("Dispersion Correction CMPLT.")
+    update_logger("Dispersion Correction CMPLT.")
     return corrected_incident, corrected_transmitted, corrected_reflected

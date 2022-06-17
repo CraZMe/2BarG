@@ -7,7 +7,7 @@ from main.Calculators.IR_calibration import IR_calibration
 from main.Utilities.TwoDimVec import TwoDimVec
 
 
-def final_calculation(CA):
+def final_calculation(update_logger, CA):
     e_incid = []
     e_reflected = []
     e_trans = []
@@ -73,11 +73,11 @@ def final_calculation(CA):
     eng_stress = eng_stress[:idx]
 
     #   Calculate the average (mean) striker velocity:
-    CA.mean_striker_velocity = SignalProcessing.mean_of_signal(striker_velocity[:idx], CA.prominence_percent,
+    CA.mean_striker_velocity = SignalProcessing.mean_of_signal(update_logger, striker_velocity[:idx], CA.prominence_percent,
                                                                  CA.mode, CA.spacing)
 
     if CA.mean_striker_velocity == -1:
-        print("Unable to calcualate Mean Striker Velocity.")
+        update_logger("Unable to calcualate Mean Striker Velocity.")
 
     #   Make all vectors the same length:
     F_in = F_in[:idx]
@@ -132,16 +132,16 @@ def final_calculation(CA):
     CA.true_stress_strain = [true_strain, true_stress]
     CA.eng_stress_strain = [eng_strain, eng_stress]
 
-    CA.mean_strain_rate = SignalProcessing.mean_of_signal(eng_strain_rate[:-1], CA.prominence_percent, CA.mode,
+    CA.mean_strain_rate = SignalProcessing.mean_of_signal(update_logger, eng_strain_rate[:-1], CA.prominence_percent, CA.mode,
                                                             CA.spacing)
 
     if CA.thermal_analysis:
-        CA.IR_temperature = IR_calibration(CA.IR_CAL.y, CA.IR_CAL.x,
+        CA.IR_temperature = IR_calibration(update_logger, CA.IR_CAL.y, CA.IR_CAL.x,
                                            CA.TC_CAL.y, CA.TC_CAL.x,
                                            CA.IR_EXP.y)
 
-        print("beta_int calculation starting...")
-        BetaInt.beta_int(CA, true_strain, true_stress)
-        print("beta_int calculation CMPLT.")
+        update_logger("beta_int calculation starting...")
+        BetaInt.beta_int(update_logger, CA, true_strain, true_stress)
+        update_logger("beta_int calculation CMPLT.")
 
     return True

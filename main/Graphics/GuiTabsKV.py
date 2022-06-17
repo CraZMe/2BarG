@@ -101,7 +101,7 @@ MDBoxLayout:
         pos_hint: {'center_x': 0.25, 'center_y': 0.8}
         size_hint_x: None
         width: 240
-
+        
     MDTextField:
         id: bar_diameter 
         font_name_hint_text: app.text_font
@@ -480,6 +480,7 @@ MDBoxLayout:
         font_name_hint_text: app.text_font
         hint_text:  "Density [kg/m^3]"
         multiline:  False
+        mode: "rectangle"
         on_text_validate:   app.ButtonAction_update_parameter("specimen", 12, self)
         helper_text: "Default value: {} [kg/m^3]".format(app.parameters[12][1])
         helper_text_mode: "on_focus"
@@ -488,13 +489,14 @@ MDBoxLayout:
         icon_right_color: app.pink
         pos_hint: {'center_x': .2, 'center_y': .2}
         size_hint_x: None
-        width: 240
+        width: 220
     
     MDTextField:
         id: heat_capacity
         font_name_hint_text: app.text_font
         hint_text:  "Heat Capacity [kJ/kgK]"
         multiline:  False
+        mode: "rectangle"
         on_text_validate:   app.ButtonAction_update_parameter("specimen", 13, self)
         helper_text: "Default value: {} [kJ/kgK]".format(app.parameters[13][1])
         helper_text_mode: "on_focus"
@@ -503,7 +505,7 @@ MDBoxLayout:
         icon_right_color: app.pink
         pos_hint: {'center_x': .8, 'center_y': .2}
         size_hint_x: None
-        width: 240
+        width: 220
 
     MDSwitch:
         pos_hint:  {'center_x': .585, 'center_y': .3}
@@ -606,6 +608,37 @@ MDBoxLayout:
         tooltip_bg_color:  app.main_color
         on_enter:   self.text_color = app.main_color
         on_leave:   self.text_color = "#808080"
+        
+    HoverButton:
+        id: show_logger
+        text: "VIEW LOGGER"
+        pos_hint: {"center_x": .5, "center_y": .9}
+        font_size: 25
+        text_color: "#808080"
+        line_color: "#808080"
+        font_name: "GOTHIC"
+        on_enter:   self.text_color = app.pink; self.line_color = app.pink
+        on_leave:   self.text_color = "#808080"; self.line_color = "#808080"
+        on_release: app.toggle_view_logger()
+    
+    M3Card:
+        id: logger_card
+        opacity: 0
+        orientation: "vertical"
+        padding: "15dp"
+        size_hint: None, None
+        size: "300dp", "550dp"
+        pos_hint: {"center_x": .2, "center_y": .6}
+        radius: dp(10)
+        md_bg_color: 0.898, 0.725, 0.69, 0.1
 
-
+        MDSeparator:
+            height: "0.2dp"
+        
+        ScrollView:
+            MDList:
+                id: logger_list
+                
+                OneLineListItem:
+                    text:   "2BarG Initialized."
 '''

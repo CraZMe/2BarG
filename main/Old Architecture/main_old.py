@@ -1730,7 +1730,7 @@ class SignalProcessing:
         """
         p_r = self.poisson_ratio  # The bar's Poisson's ratio NEEDS TO BE ADDED
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
-        bancrofts_data = np.loadtxt("../Calculators/bancrofts_data.txt")
+        bancrofts_data = np.loadtxt("../ProgramFiles/bancrofts_data.txt")
 
         rwr = np.zeros(26)  # Radius - Wavelength Ratio (RWR)
         phase_velocities = np.zeros(26)
@@ -2237,7 +2237,7 @@ class SignalProcessing:
         K = Type of Thermocouple
         """
 
-        vector_file = open("../Calculators/k_type.txt")
+        vector_file = open("../ProgramFiles/k_type.txt")
         k_type = np.loadtxt(vector_file, delimiter='\t')
         vector_file.close()
         temp = []
