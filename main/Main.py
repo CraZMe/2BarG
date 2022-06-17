@@ -1,33 +1,12 @@
 import sys
 
+from kivymd.uix.textfield import MDTextField
+
 from main.Graphics.GraphicInterface import UserInterface
 
 from kivy.core.window import Window
 
-"""
-    WELCOME!
-    
-    This is the main code of main:
-        This is where all the magic happens. 
-        The code written here (main_old.py) uses all other files as the following suggests:
-        
-            ->  tabs_old.py             The GUI in main uses Kivy & Kivymd, which are based on KV language. 
-                                    "tabs_old.py" is a KV file that contains the design structure of main's GUI.
-                                    
-            ->  bancrofts_data.txt  Data file; is used in the dispersion correction calculation.
-            
-            ->  k_type.txt          Data file used for the calibration of a K type Thermocouple. 
-                                    This is used only if thermal analysis is enabled.
-                                    
-            ->  defaults.txt        As the name implies, this is where all the settings & parameters of main   
-                                    are saved.
-     
-    Have a blast!
-    
-    // Gregory Tzvi Gershanik, creator of main.
-    
-"""
-
+from ctypes import windll, c_int64
 """
 
 Notes:
