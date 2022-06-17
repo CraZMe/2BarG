@@ -477,6 +477,7 @@ MDBoxLayout:
     
     MDTextField:
         id: density
+        opacity: 0
         font_name_hint_text: app.text_font
         hint_text:  "Density [kg/m^3]"
         multiline:  False
@@ -493,6 +494,7 @@ MDBoxLayout:
     
     MDTextField:
         id: heat_capacity
+        opacity: 0
         font_name_hint_text: app.text_font
         hint_text:  "Heat Capacity [kJ/kgK]"
         multiline:  False
