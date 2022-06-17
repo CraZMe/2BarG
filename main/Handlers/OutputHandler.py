@@ -763,11 +763,12 @@ def save_data_and_report(CA, exp_num, parameters, bar_num):
                                 xref="paper",
                                 yref="paper"))
 
-        fig.add_annotation(dict(font=dict(color='black', size=14),
-                                font_family="Garamound",
-                                x=1.02,
-                                y=0.14,
-                                showarrow=False,
+        fig.add_annotation(
+                                dict(font=dict(color='black', size=14),
+                                     font_family="Garamound",
+                                     x=1.02,
+                                     y=0.14,
+                                     showarrow=False,
                                 text="Striker Velocity: " + str("%.2f" % CA.mean_striker_velocity) + " [m/s]",
                                 textangle=0,
                                 xanchor='left',
@@ -1458,7 +1459,8 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                             args=[{'visible': [False] * 16 + [True] + [False] * 2},
                                                   {'title': 'Energy Ratio',
                                                    'xaxis': {'title': 'True Plastic Strain'},
-                                                   'yaxis': {'title': r'$\beta_{int}$'},
+                                                   'yaxis': {'title': r'$\beta_{int}$',
+                                                             'range': [0, 1]},
                                                    "yaxis2.visible": False,
                                                    'showlegend': False}]),
 
@@ -1599,6 +1601,23 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                   x=0.9, y=1.1
                               )
                               ])
+        beta_str = "β = " + str(CA.LR_T_Wp_slope * CA.density * CA.heat_capacity)
+        fig.add_annotation(dict(font=dict(color='black', size=30),
+                                font_family="Garamound",
+                                x=0,
+                                y=1.1,
+                                showarrow=False,
+                                text=beta_str,
+                                textangle=0,
+                                xanchor='left',
+                                xref="paper",
+                                yref="paper",
+                                bordercolor="#c7c7c7",
+                                borderwidth=2,
+                                borderpad=4,
+                                bgcolor="#ff7f0e",
+                                opacity=0.8
+                                ))
 
         fig.write_html(CA.path_folder + "/Analysis Results" + '.html',
                        auto_open=CA.auto_open_report,
@@ -1629,3 +1648,4 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
     s += "\n"  # For some reason, there is a problem without a new line at the end of the defaults file.
     f.write(s)
     f.close()
+

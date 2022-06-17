@@ -33,7 +33,7 @@ from kivy.core.window import Window
 Notes:
  -> beta_int Linear Regression with constraint (0,0)
  -> show calculated beta_int in plot
- -> vector length sync 
+ -> vector length sync [...]
  -> Symmetric axes
  
 """

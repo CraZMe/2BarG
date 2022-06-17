@@ -9,7 +9,7 @@ def k_temp(v):
     K = Type of Thermocouple
     """
 
-    vector_file = open("k_type.txt")
+    vector_file = open("../ProgramFiles/k_type.txt")
     k_type = loadtxt(vector_file, delimiter='\t')
     vector_file.close()
     temp = []
