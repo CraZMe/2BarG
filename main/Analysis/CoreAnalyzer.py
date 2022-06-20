@@ -78,7 +78,6 @@ class CoreAnalyzer:
         self.auto_open_report = auto_open_report
         self.smooth_value = smooth_value
 
-
     def load_experiments(self, exp_num, path_folder, mode, specimen_mode, file_type, thermal_analysis):
         """
             This function takes data from the loaded experiment and
@@ -94,7 +93,9 @@ class CoreAnalyzer:
         self.thermal_analysis = thermal_analysis
 
         os.chdir(path_folder)  # Run cmd through the given path.
+        self.user_interface.update_logger("...loading Files")
         incid, trans, IR_EXP, IR_CAL, TC_CAL = FileHandler.experiment_file_loader(file_type, exp_num, path_folder, thermal_analysis)
+        self.user_interface.update_logger("...files loaded")
         self.incid = TwoDimVec([incid[i][1] for i in range(len(incid))],
                                [incid[i][0] for i in range(len(incid))]).force_signal_to_start_at_zero()
         self.trans = TwoDimVec([trans[i][1] for i in range(len(trans))],
@@ -107,6 +108,7 @@ class CoreAnalyzer:
                                     [IR_CAL[i][0] for i in range(len(IR_CAL))])
             self.TC_CAL = TwoDimVec([TC_CAL[i][1] for i in range(len(TC_CAL))],
                                     [TC_CAL[i][0] for i in range(len(TC_CAL))])
+
 
         # Extract Time Per Point from the data.
         self.tpp = self.incid.x[1] - self.incid.x[0]

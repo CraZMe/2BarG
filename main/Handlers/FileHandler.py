@@ -102,38 +102,28 @@ def experiment_file_loader(file_type, exp_num, path_folder, thermal_analysis):
         if file_type == "FLT" or file_type == "txt":
             #   Incident
             vector_file = open(exp_path_incid)
-            vector_incid = np.loadtxt(vector_file,
-                                      delimiter='\t',
-                                      skiprows=2)
+            vector_incid = np.loadtxt(vector_file, delimiter='\t', skiprows=2)
             vector_file.close()
 
             # Transmitted
             vector_file = open(exp_path_trans)
-            vector_trans = np.loadtxt(vector_file,
-                                      delimiter='\t',
-                                      skiprows=2)
+            vector_trans = np.loadtxt(vector_file, delimiter='\t', skiprows=2)
             vector_file.close()
 
             if thermal_analysis:
                 #   IR EXP
                 vector_file = open(exp_path_IR_EXP)
-                vector_IR_EXP = np.loadtxt(vector_file,
-                                           delimiter='\t',
-                                           skiprows=2)
+                vector_IR_EXP = np.loadtxt(vector_file, delimiter='\t', skiprows=2)
                 vector_file.close()
 
                 # IR CAL
                 vector_file = open(exp_path_IR_CAL)
-                vector_IR_CAL = np.loadtxt(vector_file,
-                                           delimiter='\t',
-                                           skiprows=2)
+                vector_IR_CAL = np.loadtxt(vector_file, delimiter='\t', skiprows=2)
                 vector_file.close()
 
                 # TC CAL
                 vector_file = open(exp_path_TC_CAL)
-                vector_TC_CAL = np.loadtxt(vector_file,
-                                           delimiter='\t',
-                                           skiprows=2)
+                vector_TC_CAL = np.loadtxt(vector_file, delimiter='\t', skiprows=2)
                 vector_file.close()
 
         elif file_type == "csv":

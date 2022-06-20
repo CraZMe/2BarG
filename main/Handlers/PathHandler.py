@@ -4,7 +4,7 @@ import shutil
 from easygui import diropenbox
 
 
-def set_path_input(path, two_bar_g_path, thermal_analysis, one_bar):
+def set_path_input(path, two_bar_g_path, thermal_analysis):
     """
         This functions uses the chosen (or default) path given to the main program to do the following:
         The path folder chosen shall be one with raw experiment data in 'WFT' files,
@@ -34,6 +34,7 @@ def set_path_input(path, two_bar_g_path, thermal_analysis, one_bar):
                     file_type = file_type[1:]
 
                     if file_type == "WFT":
+                        exp_file_type = "FLT"
                         apply_WFT2FLT = True
                         break
 
@@ -125,7 +126,7 @@ def set_path_input(path, two_bar_g_path, thermal_analysis, one_bar):
                         found_exp_files = False
                         for file in files:
                             file_name, file_type = os.path.splitext(file)
-                            exp_file_type = file_type[1:]
+                            file_type = file_type[1:]
 
                             if file_type != "":
                                 found_exp_files = True
