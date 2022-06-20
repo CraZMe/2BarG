@@ -15,7 +15,7 @@ from main.Utilities.TwoDimVec import TwoDimVec
 
 class CoreAnalyzer:
 
-    def __init__(self, user_interface, path, mode, specimen_mode, thermal_analysis, parameters, spacing, smooth_value, bar_num):
+    def __init__(self, user_interface, path, mode, specimen_mode, thermal_analysis, parameters, spacing, smooth_value, bar_num, bridge_type):
         self.path_folder = path
         self.mode = mode
         self.specimen_mode = specimen_mode
@@ -28,6 +28,7 @@ class CoreAnalyzer:
         self.tpp = int
         self.exp_num = 1
         self.damp_f = 10 ** (-3)  # New variable to be used in the future (future...future......future...)
+        self.bridge_type = bridge_type
 
         self.incid = TwoDimVec()
         self.trans = TwoDimVec()
@@ -39,6 +40,9 @@ class CoreAnalyzer:
 
         self.incid_og = TwoDimVec()
         self.trans_og = TwoDimVec()
+
+        self.incid_strain = None
+        self.trans_strain = None
 
         self.IR_EXP = TwoDimVec()
         self.IR_CAL = TwoDimVec()
@@ -195,16 +199,21 @@ class CoreAnalyzer:
         self.corr_trans.y = corr_transmitted
         self.corr_refle.y = corr_reflected
 
-
         valid = FinalCalculation.final_calculation(self.user_interface.update_logger, self)
+
         if valid:
-            if self.thermal_analysis:
-                from main.Handlers.OutputHandler import save_data_and_report_thermal
-                save_data_and_report_thermal(self, self.exp_num, self.parameters, self.bar_num)
-            else:
-                from main.Handlers.OutputHandler import save_data_and_report
-                save_data_and_report(self, self.exp_num, self.parameters, self.bar_num)
             self.user_interface.update_logger("Analysis CMPLT.")
+            from main.Handlers.OutputHandler import save_data
+            self.user_interface.update_logger("Saving data...")
+            save_data(self, self.exp_num, self.parameters, self.bar_num)
+            self.user_interface.update_logger("Data Saved.")
+            if self.thermal_analysis:
+                from main.Handlers.OutputHandler import make_report_thermal
+                make_report_thermal(self, self.exp_num, self.parameters, self.bar_num)
+            else:
+                from main.Handlers.OutputHandler import make_report
+                make_report(self, self.exp_num, self.parameters, self.bar_num)
+
             return True
 
         return False

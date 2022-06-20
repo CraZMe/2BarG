@@ -64,6 +64,8 @@ class UserInterface(MDApp):
         self.bar_num = 2
         self.spacing = None
         self.smooth_value = None
+        self.bridge_type = 0.25
+
         # Get the current (original) directory for os operations.  This string will be valuable when using
         # the "Change Path Folder" button. Used in arrange_files_in_path function.
         self.two_bar_g_path = os.getcwd()
@@ -85,7 +87,9 @@ class UserInterface(MDApp):
 
         self.CA = CoreAnalyzer.CoreAnalyzer(self, self.path_folder, self.mode, self.specimen_mode,
                                             self.thermal_analysis, self.parameters,
-                                            self.spacing, self.smooth_value, self.bar_num)
+                                            self.spacing, self.smooth_value, self.bar_num,
+                                            self.bridge_type)
+
         #   Cropping mode is set to automatic as default:
         self.sp_mode = "Automatic"
         self.auto_open_report = True
@@ -127,7 +131,7 @@ class UserInterface(MDApp):
         sound_velocity = data[6]
         gage_factor = data[7]
         bridge_tension = data[8]
-        self.path_folder = data[9]
+
         lod = data[10]
         if data[11] == "True":
             self.thermal_analysis = True
@@ -135,6 +139,21 @@ class UserInterface(MDApp):
             self.thermal_analysis = False
         density = data[12]
         heat_capacity = data[13]
+        if data[14] == "True":
+            quarter = True
+        else:
+            quarter = False
+
+        if data[15] == "True":
+            half = True
+        else:
+            half = False
+
+        if data[16] == "True":
+            full = True
+        else:
+            full = False
+
         self.parameters = [["Specimen Diameter", spec_diam],
                            ["Specimen Length", spec_length],
                            ["Bar Diameter", bar_diameter],
@@ -148,7 +167,10 @@ class UserInterface(MDApp):
                            ["Light or Dark", lod],
                            ["Thermal Analysis", self.thermal_analysis],
                            ["Density", density],
-                           ["Heat Capacity", heat_capacity]]
+                           ["Heat Capacity", heat_capacity],
+                           ["Quarter", quarter],
+                           ["Half", half],
+                           ["Full", full]]
 
         #   lod = Light Or Dark
         if lod == "Dark":
@@ -200,6 +222,10 @@ class UserInterface(MDApp):
 
         if self.thermal_analysis:
             self.root.ids.tabs.get_slides()[2].ids.thermal_analysis.active = True
+
+        self.root.ids.tabs.get_slides()[2].ids.quarter.active = self.parameters[14][1]
+        self.root.ids.tabs.get_slides()[2].ids.half.active = self.parameters[15][1]
+        self.root.ids.tabs.get_slides()[2].ids.full.active = self.parameters[16][1]
 
         self.set_path_folder(self.path_folder)
 
@@ -627,4 +653,12 @@ class UserInterface(MDApp):
             self.root.ids.tabs.get_slides()[2].ids.logger_card.opacity = 0
         else:
             self.root.ids.tabs.get_slides()[2].ids.logger_card.opacity = 1
+
+    def set_bridge_type(self, value):
+        self.CA.bridge_type = value
+        self.parameters[14][1] = self.root.ids.tabs.get_slides()[2].ids.quarter.active
+        self.parameters[15][1] = self.root.ids.tabs.get_slides()[2].ids.half.active
+        self.parameters[16][1] = self.root.ids.tabs.get_slides()[2].ids.full.active
+        FileHandler.update_txt_file(self.parameters, "ProgramFiles/defaults.TwoBarG", self.owd)
+
 
