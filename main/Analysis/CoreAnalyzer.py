@@ -91,6 +91,7 @@ class CoreAnalyzer:
         self.mode = mode
         self.specimen_mode = specimen_mode
         self.thermal_analysis = thermal_analysis
+        self.exp_num = exp_num
 
         os.chdir(path_folder)  # Run cmd through the given path.
         self.user_interface.update_logger("...loading Files")

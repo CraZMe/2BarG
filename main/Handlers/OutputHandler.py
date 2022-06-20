@@ -313,7 +313,7 @@ def make_report(CA, exp_num, parameters, bar_num):
                             xref="paper",
                             yref="paper"))
 
-    fig.write_html(CA.path_folder + "\Exp " + str(exp_num) + '.html',
+    fig.write_html(CA.path_folder + "/Exp " + str(exp_num) + '.html',
                    auto_open=CA.auto_open_report,
                    include_mathjax='cdn')
 
