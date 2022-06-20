@@ -85,10 +85,6 @@ def beta_int(update_logger, CA, true_strain, true_stress):
     Wp = [0] + Wp
     beta_int = [0] + beta_int
 
-    print(beta_int)
-    print(CA.IR_temperature)
-    print(Wp)
-
     #   Search for maximum temperature:
     max_temp_idx = np.argmax(CA.IR_temperature)
 

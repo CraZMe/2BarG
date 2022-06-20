@@ -8,6 +8,7 @@ from main.Utilities.TwoDimVec import TwoDimVec
 
 
 def final_calculation(update_logger, CA):
+    update_logger("Final Calculation Commencing...")
     e_incid = []
     e_reflected = []
     e_trans = []
@@ -34,9 +35,9 @@ def final_calculation(update_logger, CA):
         time.append((i + 1) * CA.tpp)
 
         #   Strains
-        e_incid.append((4 * CA.corr_incid.y[i]) / (CA.gage_factor * CA.bridge_tension))  # [strain]
-        e_reflected.append((4 * CA.corr_refle.y[i]) / (CA.gage_factor * CA.bridge_tension))  # [strain]
-        e_trans.append((4 * CA.corr_trans.y[i]) / (CA.gage_factor * CA.bridge_tension))  # [strain]
+        e_incid.append((CA.corr_incid.y[i]) / (CA.bridge_type * CA.gage_factor * CA.bridge_tension))  # [strain]
+        e_reflected.append((CA.corr_refle.y[i]) / (CA.bridge_type * CA.gage_factor * CA.bridge_tension))  # [strain]
+        e_trans.append((CA.corr_trans.y[i]) / (CA.bridge_type * CA.gage_factor * CA.bridge_tension))  # [strain]
 
         incid_strain.append((4 * CA.incid_og.y[i]) / (CA.gage_factor * CA.bridge_tension))
         trans_strain.append((4 * CA.trans_og.y[i]) / (CA.gage_factor * CA.bridge_tension))
@@ -79,7 +80,7 @@ def final_calculation(update_logger, CA):
                                                                CA.mode, CA.spacing)
 
     if CA.mean_striker_velocity == -1:
-        update_logger("Unable to calcualate Mean Striker Velocity.")
+        update_logger("Unable to calculate Mean Striker Velocity.")
 
     #   Make all vectors the same length:
     F_in = F_in[:idx]
@@ -102,8 +103,8 @@ def final_calculation(update_logger, CA):
     CA.v_in = v_in
     CA.v_out = v_out
 
-    CA.incid = TwoDimVec(time, incid_strain)
-    CA.trans = TwoDimVec(time, trans_strain)
+    CA.incid_strain = TwoDimVec(time, incid_strain)
+    CA.trans_strain = TwoDimVec(time, trans_strain)
 
     n = len(CA.trans_og.y) - 1
     CA.trans_og.y = CA.trans_og.y[:n]
@@ -134,8 +135,11 @@ def final_calculation(update_logger, CA):
     CA.true_stress_strain = [true_strain, true_stress]
     CA.eng_stress_strain = [eng_strain, eng_stress]
 
-    CA.mean_strain_rate = SignalProcessing.mean_of_signal(update_logger, eng_strain_rate[:-1], CA.prominence_percent, CA.mode,
+    try:
+        CA.mean_strain_rate = SignalProcessing.mean_of_signal(update_logger, eng_strain_rate[:-1], CA.prominence_percent, CA.mode,
                                                             CA.spacing)
+    except Exception as e:
+        update_logger(str(e))
 
     if CA.thermal_analysis:
         CA.IR_temperature = IR_calibration(update_logger, CA.IR_CAL.y, CA.IR_CAL.x,
@@ -146,4 +150,5 @@ def final_calculation(update_logger, CA):
         BetaInt.beta_int(update_logger, CA, true_strain, true_stress)
         update_logger("beta_int calculation CMPLT.")
 
+    update_logger("Final Calculation CMPLT.")
     return True

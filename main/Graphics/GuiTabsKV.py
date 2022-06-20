@@ -310,7 +310,7 @@ MDBoxLayout:
         theme_text_color: "Custom"
         font_size: 16
         text_color: "#808080"
-        on_enter:   self.text_color = app.main_color
+        on_enter:   self.text_color = app.pink
         on_leave:   self.text_color = "#808080"
         on_release: app.ButtonAction_select_data_file("incid")
 
@@ -324,7 +324,7 @@ MDBoxLayout:
         theme_text_color: "Custom"
         font_size: 16
         text_color: "#808080"
-        on_enter:   self.text_color = app.main_color
+        on_enter:   self.text_color = app.pink
         on_leave:   self.text_color = "#808080"
         on_release: app.ButtonAction_select_data_file("trans")
 
@@ -338,7 +338,7 @@ MDBoxLayout:
         theme_text_color: "Custom"
         font_size: 16
         text_color: "#808080"
-        on_enter:   self.text_color = app.main_color
+        on_enter:   self.text_color = app.pink
         on_leave:   self.text_color = "#808080"
         on_release: app.ButtonAction_select_data_file("IR_EXP")
 
@@ -352,7 +352,7 @@ MDBoxLayout:
         theme_text_color: "Custom"
         font_size: 16
         text_color: "#808080"
-        on_enter:   self.text_color = app.main_color
+        on_enter:   self.text_color = app.pink
         on_leave:   self.text_color = "#808080"
         on_release: app.ButtonAction_select_data_file("IR_CAL")
 
@@ -366,7 +366,7 @@ MDBoxLayout:
         theme_text_color: "Custom"
         font_size: 16
         text_color: "#808080"
-        on_enter:   self.text_color = app.main_color
+        on_enter:   self.text_color = app.pink
         on_leave:   self.text_color = "#808080"
         on_release: app.ButtonAction_select_data_file("TC_CAL")
 
@@ -510,38 +510,79 @@ MDBoxLayout:
         width: 220
 
     MDSwitch:
-        pos_hint:  {'center_x': .585, 'center_y': .3}
+        pos_hint:  {'center_x': .585, 'center_y': .275}
         on_active:  app.ButtonAction_change_auto_open_report()
         on_state:   app.ButtonAction_change_auto_open_report()
 
     MDLabel:
-        pos_hint:  {'center_x': .895, 'center_y': .3}
+        pos_hint:  {'center_x': .895, 'center_y': .275}
         text:   "Disable Report"
         halign: "left"
         font_style: "Button"
 
     MDSwitch:
         id: dark_mode
-        pos_hint:  {'center_x': .585, 'center_y': .4}
+        pos_hint:  {'center_x': .585, 'center_y': .35}
         on_active:  app.ButtonAction_change_theme()
         on_state:   app.ButtonAction_change_theme()
 
     MDLabel:
-        pos_hint:  {'center_x': .895, 'center_y': .4}
+        pos_hint:  {'center_x': .895, 'center_y': .35}
         text:   "Dark Mode"
         halign: "left"
         font_style: "Button"
 
     MDSwitch:
-        pos_hint:  {'center_x': .585, 'center_y': .5}
+        pos_hint:  {'center_x': .585, 'center_y': .425}
         on_active:  app.ButtonAction_change_bar_num()
         on_state:   app.ButtonAction_change_bar_num()
 
     MDLabel:
-        pos_hint:  {'center_x': .895, 'center_y': .5}
+        pos_hint:  {'center_x': .895, 'center_y': .425}
         text:   "One Bar"
         halign: "left"
         font_style: "Button"
+    
+    MDLabel:
+        pos_hint:  {'center_x': .5, 'center_y': .6}
+        text:   "Wheatstone Bridge Type"
+        halign: "center"
+        font_style: "Button"
+    
+    MDLabel:
+        pos_hint:  {'center_x': .4, 'center_y': .55}
+        text:   "¼"
+        halign: "center"
+        font_style: "Body1"
+        
+    MDLabel:
+        pos_hint:  {'center_x': .5, 'center_y': .55}
+        text:   "½"
+        halign: "center"
+        font_style: "Body1"
+        
+    MDLabel:
+        pos_hint:  {'center_x': .6, 'center_y': .55}
+        text:   "1"
+        halign: "center"
+        font_style: "Body1"
+        
+    FloatLayout:
+
+        Check:
+            id: quarter
+            pos_hint: {'center_x': .4, 'center_y': .5}
+            on_active: app.set_bridge_type(0.25)
+        
+        Check:
+            id: half
+            pos_hint: {'center_x': .5, 'center_y': .5}
+            on_active: app.set_bridge_type(0.5)
+            
+        Check:
+            id: full
+            pos_hint: {'center_x': .6, 'center_y': .5}
+            on_active: app.set_bridge_type(1)
 
     MDTextField:
         id: prominence_percent
@@ -552,7 +593,7 @@ MDBoxLayout:
         helper_text: "Default value: {}%".format(app.prominence_percent*100)
         helper_text_mode: "on_focus"
         helper_text_color: app.pink
-        pos_hint: {'center_x': .5, 'center_y': .6}
+        pos_hint: {'center_x': .5, 'center_y': .6625}
         icon_right: "chart-areaspline"
         icon_right_color: app.pink
         size_hint_x: 0.21
@@ -569,7 +610,7 @@ MDBoxLayout:
         helper_text_color: app.pink
         icon_right: "arrow-expand-horizontal"
         icon_right_color: app.pink
-        pos_hint: {'center_x': .5, 'center_y': .7}
+        pos_hint: {'center_x': .5, 'center_y': .725}
         size_hint_x: 0.21
         width: 300
 
