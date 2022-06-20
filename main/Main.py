@@ -4,16 +4,6 @@ from main.Graphics.GraphicInterface import UserInterface
 
 from kivy.core.window import Window
 
-"""
-
-Notes:
- -> beta_int Linear Regression with constraint (0,0)
- -> show calculated beta_int in plot
- -> vector length sync [...]
- -> Symmetric axes
- 
-"""
-
 Window.size = (900, 850)
 Window.icon = "2BarG_emblem.ico"
 Window.title = "2BarG"
