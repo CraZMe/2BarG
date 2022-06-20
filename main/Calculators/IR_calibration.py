@@ -2,6 +2,7 @@ from numpy import mean, diff, exp
 from pandas import DataFrame
 from scipy.optimize import curve_fit
 from .k_temp import k_temp
+from ..Analysis.SignalProcessing import zeroing
 
 
 def IR_calibration(update_logger, volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC_CAL, volt_IR_EXP):
@@ -58,7 +59,7 @@ def IR_calibration(update_logger, volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC
         HCT_envelope_derivative = HCT_envelope_diff[i] / time_diff
 
         #   If the derivative is negative enough, crop the signal.
-        if HCT_envelope_derivative < -0.5:
+        if HCT_envelope_derivative < -0.05:
             #   Crop the signals according to the found crop index
             HCT_envelope = HCT_envelope[i:]
             HCT_time = time_IR_CAL[i:]
@@ -66,8 +67,7 @@ def IR_calibration(update_logger, volt_IR_CAL, time_IR_CAL, volt_TC_CAL, time_TC
             TC = volt_TC_CAL[i:]
             TC_time = time_TC_CAL[i:]
 
-            HCT_time = [t - time_IR_CAL[0] for t in HCT_time]
-            TC_time = [t - time_TC_CAL[0] for t in TC_time]
+            zeroing([HCT_time, TC_time])
 
             update_logger("...Cropping Complete")
             break

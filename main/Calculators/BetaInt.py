@@ -1,14 +1,13 @@
 import numpy as np
 from scipy.integrate import trapz
 
-from main.Calculators import OneDimInterp, LinearRegression
+from main.Calculators import LinearRegression
 
 
 def beta_int(update_logger, CA, true_strain, true_stress):
     #   beta_int calculation:
     rho = CA.density
     Cp = CA.heat_capacity
-
     """
         The plastic strain is the strain after the elastic region. 
         A cropping should be done to obtain this area.
@@ -58,9 +57,11 @@ def beta_int(update_logger, CA, true_strain, true_stress):
     #   Make the strain start at zero:
     de = plastic_strain[0]
     CA.plastic_strain = [X - de for X in plastic_strain]
+
     CA.plastic_stress = plastic_stress
     CA.IR_temperature = CA.IR_temperature[crop_idx:]
     CA.plastic_time = CA.time[crop_idx:]
+
     dt = CA.time[0]
     CA.plastic_time = [X - dt for X in CA.plastic_time]
 
@@ -69,20 +70,24 @@ def beta_int(update_logger, CA, true_strain, true_stress):
         we shall interpolate the plastic stress & strain to be accordingly.
     '''
 
-    expander = int(len(CA.IR_temperature) / len(plastic_stress)) + 1
-    interp_plastic_stress = OneDimInterp.interp(plastic_stress, expander)
-    interp_plastic_strain = OneDimInterp.interp(plastic_strain, expander)
-
-    interp_plastic_stress = interp_plastic_stress[:len(CA.IR_temperature)]
-    interp_plastic_strain = interp_plastic_strain[:len(CA.IR_temperature)]
-
     beta_int = []
     Wp = []
 
-    for i in range(len(interp_plastic_stress)):
-        Wp_i = trapz(interp_plastic_stress[0:i], interp_plastic_strain[0:i])
+    #   Start at 5% of strain vector to avoid singularity:
+    starting_idx = int(len(plastic_strain) * 5 / 100) + 1
+
+    for i in range(starting_idx, len(plastic_stress)):
+        # [Stress is in MPa thus * 10^6]
+        Wp_i = trapz(plastic_stress[0:i], plastic_strain[0:i]) * (10 ** 6)
         Wp.append(Wp_i)
-        beta_int.append(rho * Cp * CA.IR_temperature[i] / Wp_i / (10 ** 6))  # [Stress is in MPa thus / 10^6]
+        beta_int.append(rho * Cp * CA.IR_temperature[i] / Wp_i)
+
+    Wp = [0] + Wp
+    beta_int = [0] + beta_int
+
+    print(beta_int)
+    print(CA.IR_temperature)
+    print(Wp)
 
     #   Search for maximum temperature:
     max_temp_idx = np.argmax(CA.IR_temperature)

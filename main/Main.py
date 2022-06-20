@@ -6,7 +6,6 @@ from main.Graphics.GraphicInterface import UserInterface
 
 from kivy.core.window import Window
 
-from ctypes import windll, c_int64
 """
 
 Notes:

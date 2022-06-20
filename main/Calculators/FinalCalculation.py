@@ -73,8 +73,10 @@ def final_calculation(update_logger, CA):
     eng_stress = eng_stress[:idx]
 
     #   Calculate the average (mean) striker velocity:
-    CA.mean_striker_velocity = SignalProcessing.mean_of_signal(update_logger, striker_velocity[:idx], CA.prominence_percent,
-                                                                 CA.mode, CA.spacing)
+    CA.mean_striker_velocity = SignalProcessing.mean_of_signal(update_logger,
+                                                               striker_velocity[:idx],
+                                                               CA.prominence_percent,
+                                                               CA.mode, CA.spacing)
 
     if CA.mean_striker_velocity == -1:
         update_logger("Unable to calcualate Mean Striker Velocity.")

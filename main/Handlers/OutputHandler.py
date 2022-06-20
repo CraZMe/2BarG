@@ -1307,70 +1307,72 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                        fmt='%s')
 
             fig = make_subplots(specs=[[{"secondary_y": True}]])
-            fig.add_trace(go.Scatter(name=r'$Incident$', y=CA.incid_og.y, x=CA.incid_og.x,
-                                     mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$Transmitted$', y=CA.trans_og.y, x=CA.trans_og.x,
+            fig.add_trace(go.Scatter(name=r'$\Large{Incident}$', y=CA.incid_og.y, x=CA.incid_og.x,
+                                     mode='lines', visible=False, secondary_y=False))
+            fig.add_trace(go.Scatter(name=r'$\Large{Transmitted}..$', y=CA.trans_og.y, x=CA.trans_og.x,
                                      mode='lines', visible=False), secondary_y=False)
 
-            fig.add_trace(go.Scatter(name=r'$Incident$', y=CA.corr_incid.y, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{Incident}$', y=CA.corr_incid.y, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$Transmitted$', y=CA.corr_trans.y, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{Transmitted}..$', y=CA.corr_trans.y, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$Reflected$', y=CA.corr_refle.y, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{Reflected}$', y=CA.corr_refle.y, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$IR$', y=CA.IR_EXP.y[:len(micro_sec)], x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{IR}$', y=CA.IR_EXP.y[:len(micro_sec)], x=micro_sec,
                                      mode='lines', visible=False), secondary_y=True)
 
-            fig.add_trace(go.Scatter(name=r'$U_{in}$', y=CA.u_in, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{U_{in}}$', y=CA.u_in, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$U_{out}$', y=CA.u_out, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{U_{out}}$', y=CA.u_out, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
 
-            fig.add_trace(go.Scatter(name=r'$\sigma$', y=CA.plastic_stress, x=CA.plastic_strain,
+            fig.add_trace(go.Scatter(name=r'$\Large{\sigma}$', y=CA.plastic_stress, x=CA.plastic_strain,
                                      mode='lines'), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$IR$', y=CA.IR_temperature, x=CA.plastic_strain,
+            fig.add_trace(go.Scatter(name=r'$\Large{IR}$', y=CA.IR_temperature, x=CA.plastic_strain,
                                      mode='lines', visible=False), secondary_y=True)
 
-            fig.add_trace(go.Scatter(name='$F_{in}$', y=CA.F_in, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{F_{in}}$', y=CA.F_in, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$F_{out}$', y=CA.F_out, x=micro_sec,
-                                     mode='lines', visible=False), secondary_y=False)
-
-            fig.add_trace(go.Scatter(name=r'$V_{in}$', y=CA.v_in, x=micro_sec,
-                                     mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$V_{out}$', y=CA.v_out, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{F_{out}}$', y=CA.F_out, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
 
-            fig.add_trace(go.Scatter(name=r'$\epsilon_{plastic}$', y=CA.plastic_strain, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{V_{in}}$', y=CA.v_in, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=False)
-            fig.add_trace(go.Scatter(name=r'$IR$', y=CA.IR_temperature, x=micro_sec,
+            fig.add_trace(go.Scatter(name=r'$\Large{V_{out}}$', y=CA.v_out, x=micro_sec,
+                                     mode='lines', visible=False), secondary_y=False)
+
+            fig.add_trace(go.Scatter(name=r'$\Large{\epsilon_{plastic}}$..', y=CA.plastic_strain, x=micro_sec,
+                                     mode='lines', visible=False), secondary_y=False)
+            fig.add_trace(go.Scatter(name=r'$\Large{IR}$', y=CA.IR_temperature, x=micro_sec,
                                      mode='lines', visible=False), secondary_y=True)
 
-            fig.add_trace(go.Scatter(name=r'$\beta_{int}$', y=CA.beta_int, x=CA.plastic_strain,
+            fig.add_trace(go.Scatter(name=r'$\Large{\beta_{int}}$', y=CA.beta_int, x=CA.plastic_strain,
                                      mode='lines', visible=False), secondary_y=False)
 
-            fig.add_trace(go.Scatter(name=r'$\Delta T = \beta_{int} \cdot W_p \textrm{ (Experiment)}$',
+            fig.add_trace(go.Scatter(name=r'$\Large{\Delta T = \beta_{int} \cdot W_p \textrm{ (Experiment)}}$',
                                      y=CA.IR_temperature, x=CA.Wp,
                                      mode='lines', visible=False), secondary_y=False)
 
-            LR_name = r"$\Delta T = " + str(CA.LR_T_Wp_slope)[:5] + "W_p " + " + " \
-                      + str(CA.LR_T_Wp_intercept)[:5] + r"\textrm{ (Linear Regression) ____ }$"
+            LR_name = r"$\Large{\Delta T = " + str(CA.LR_T_Wp_slope * (10 ** 6))[:5] \
+                      + r"\cdot 10^{-6} \cdot W_p " + " + " \
+                      + str(CA.LR_T_Wp_intercept)[:5] \
+                      + r"\textrm{ (Linear Regression) ____.}}$"
             fig.add_trace(go.Scatter(name=LR_name, y=CA.LR_T_Wp, x=CA.Wp, line=dict(dash='dash'),
                                      mode='lines', visible=False), secondary_y=False)
 
-            fig.update_layout(title_x=0.45, template='none',
-                              font=dict(family="Times New Roman", size=25),
-                              legend=dict(yanchor='top', xanchor='right', y=1.1, x=1,
+            fig.update_layout(title_x=0.5, template='none',
+                              font=dict(family="Overpass", size=20),
+                              legend=dict(yanchor='top', xanchor='right', y=1.2, x=1,
                                           font=dict(size=30)),
-                              margin=dict(l=150, r=500, t=200, b=250),
-                              updatemenus=[go.layout.Updatemenu(
+                              margin=dict(l=300, r=300, t=200, b=200),
+                              updatemenus=[
+                                dict(
                                   active=3,
                                   buttons=list(
                                       [dict(label='Raw Signals',
                                             method='update',
                                             args=[{'visible': [True] * 2 + [False] * 17},
-                                                  {'title': 'Raw Signals',
-                                                   'xaxis': {'title': 'Time [μs]'},
+                                                  {'xaxis': {'title': 'Time [μs]'},
                                                    'yaxis': {'title': 'Amplitude [V]'},
                                                    "yaxis2.visible": False,
                                                    'showlegend': True}]),
@@ -1378,8 +1380,7 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                        dict(label='Corrected Signals',
                                             method='update',
                                             args=[{'visible': [False] * 2 + [True] * 4 + [False] * 13},
-                                                  {'title': r'Corrected Signals',
-                                                   'xaxis': {'title': 'Time [μs]'},
+                                                  {'xaxis': {'title': 'Time [μs]'},
                                                    'yaxis': {'title': 'Amplitude [V]'},
                                                    'yaxis2': {'title': 'Amplitude [V]',
                                                               'color': 'Red',
@@ -1394,8 +1395,7 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                        dict(label='Displacements',
                                             method='update',
                                             args=[{'visible': [False] * 6 + [True] * 2 + [False] * 11},
-                                                  {'title': 'Displacements',
-                                                   'xaxis': {'title': 'Time [μs]'},
+                                                  {'xaxis': {'title': 'Time [μs]'},
                                                    'yaxis': {'title': 'Displacement [m]'},
                                                    "yaxis2.visible": False,
                                                    'showlegend': True}]),
@@ -1403,28 +1403,25 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                        dict(label='Stress - Strain',
                                             method='update',
                                             args=[{'visible': [False] * 8 + [True] * 2 + [False] * 9},
-                                                  {
-                                                      'title': 'True Stress and Temperature vs. True Plastic Strain',
-                                                      'xaxis': {'title': 'Plastic Strain'},
-                                                      'yaxis': {'title': 'Stress [MPa]',
-                                                                'zeroline': False,
-                                                                'mirror': True},
+                                                  {'xaxis': {'title': 'Plastic Strain'},
+                                                  'yaxis': {'title': 'Stress [MPa]',
+                                                            'zeroline': False,
+                                                            'mirror': True},
 
-                                                      'yaxis2': {'title': r'${\Delta} T [Celsius]$',
-                                                                 'color': 'Orange',
-                                                                 'zeroline': False,
-                                                                 'mirror': True,
-                                                                 'anchor': 'free',
-                                                                 'overlaying': 'y',
-                                                                 'side': 'right',
-                                                                 'position': 1},
-                                                      'showlegend': True}]),
+                                                  'yaxis2': {'title': r'$\Large{{\Delta} T [Celsius]}$',
+                                                             'color': 'Orange',
+                                                             'zeroline': False,
+                                                             'mirror': True,
+                                                             'anchor': 'free',
+                                                             'overlaying': 'y',
+                                                             'side': 'right',
+                                                             'position': 1},
+                                                  'showlegend': True}]),
 
                                        dict(label='Forces',
                                             method='update',
                                             args=[{'visible': [False] * 10 + [True] * 2 + [False] * 7},
-                                                  {'title': 'Forces',
-                                                   'xaxis': {'title': 'Time [μs]'},
+                                                  {'xaxis': {'title': 'Time [μs]'},
                                                    'yaxis': {'title': 'Force [N]'},
                                                    "yaxis2.visible": False,
                                                    'showlegend': True}]),
@@ -1432,8 +1429,7 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                        dict(label='Velocities',
                                             method='update',
                                             args=[{'visible': [False] * 12 + [True] * 2 + [False] * 5},
-                                                  {'title': 'Velocities',
-                                                   'xaxis': {'title': 'Time [μs]'},
+                                                  {'xaxis': {'title': 'Time [μs]'},
                                                    'yaxis': {'title': 'Velocity [m/s]'},
                                                    "yaxis2.visible": False,
                                                    'showlegend': True}]),
@@ -1441,10 +1437,9 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                        dict(label='Plastic Strain & Temperature',
                                             method='update',
                                             args=[{'visible': [False] * 14 + [True] * 2 + [False] * 3},
-                                                  {'title': 'Temperature, Strain vs Time',
-                                                   'xaxis': {'title': 'Time [μs]'},
+                                                  {'xaxis': {'title': 'Time [μs]'},
                                                    'yaxis': {'title': 'Plastic Strain'},
-                                                   'yaxis2': {'title': r'${\Delta} T [Celsius]$ ',
+                                                   'yaxis2': {'title': r'$\Large{{\Delta} T [Celsius]}$',
                                                               'color': 'Orange',
                                                               'zeroline': False,
                                                               'mirror': True,
@@ -1454,12 +1449,11 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                                               'position': 1},
                                                    'showlegend': True}]),
 
-                                       dict(label='beta_int',
+                                       dict(label='Energy Ratio',
                                             method='update',
                                             args=[{'visible': [False] * 16 + [True] + [False] * 2},
-                                                  {'title': 'Energy Ratio',
-                                                   'xaxis': {'title': 'True Plastic Strain'},
-                                                   'yaxis': {'title': r'$\beta_{int}$',
+                                                  {'xaxis': {'title': 'True Plastic Strain'},
+                                                   'yaxis': {'title': r'$\Large{\beta_{int}}$',
                                                              'range': [0, 1]},
                                                    "yaxis2.visible": False,
                                                    'showlegend': False}]),
@@ -1467,14 +1461,13 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                        dict(label='Temperature - Plastic Work',
                                             method='update',
                                             args=[{'visible': [False] * 17 + [True] * 2},
-                                                  {'title': 'Energy Ratio',
-                                                   'xaxis': {'title': 'Plastic Work [J]'},
-                                                   'yaxis': {'title': r'${\Delta} T [Celsius]$'},
+                                                  {'xaxis': {'title': 'Plastic Work [J]'},
+                                                   'yaxis': {'title': r'$\Large{{\Delta} T [Celsius]}$'},
                                                    "yaxis2.visible": False,
                                                    'showlegend': True}]),
-                                       ]),
-                                  x=0.125, y=1.2
-                              )
+
+                                       ]), xanchor='left', x=0, y=1.2
+                                    )
                               ])
 
         if CA.specimen_mode == "shear":
@@ -1553,11 +1546,12 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
             fig.update_layout(title_x=0.5, template='none',
                               font=dict(family="Gravitas One", size=22),
                               legend=dict(yanchor='top', xanchor='right', y=0.99, x=0.99, itemsizing='trace'),
-                              updatemenus=[go.layout.Updatemenu(
+                              updatemenus=[
+                                  dict(
                                   active=3,
                                   buttons=list(
                                       [dict(label='Raw Signals',
-                                            method='update',
+                                            method='restyle',
                                             args=[{'visible': [True] * 2 + [False] * 10},
                                                   {'title': r'$Raw Signals$',
                                                    'xaxis': {'title': r'$Time [μs]$'},
@@ -1565,7 +1559,7 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                                    'showlegend': True}]),
 
                                        dict(label='Corrected Signals',
-                                            method='update',
+                                            method='restyle',
                                             args=[{'visible': [False] * 2 + [True] * 4 + [False] * 6},
                                                   {'title': r'$Corrected Signals$',
                                                    'xaxis': {'title': r'$Time [μs]$'},
@@ -1573,7 +1567,7 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                                    'showlegend': True}]),
 
                                        dict(label='Displacement',
-                                            method='update',
+                                            method='restyle',
                                             args=[{'visible': [False] * 6 + [True] * 2 + [False] * 4},
                                                   {'title': r'$Displacements$',
                                                    'xaxis': {'title': r'$Time [μs]$'},
@@ -1581,7 +1575,7 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                                    'showlegend': True}]),
 
                                        dict(label='Forces',
-                                            method='update',
+                                            method='restyle',
                                             args=[{'visible': [False] * 8 + [True] * 2 + [False] * 2},
                                                   {'title': r'$Forces$',
                                                    'xaxis': {'title': r'$Time [μs]$'},
@@ -1589,7 +1583,7 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                                    'showlegend': True}]),
 
                                        dict(label='Velocities',
-                                            method='update',
+                                            method='restyle',
                                             args=[{'visible': [False] * 10 + [True] * 2},
                                                   {'title': r'$Velocities$',
                                                    'xaxis': {'title': r'$Time [μs]$'},
@@ -1598,11 +1592,12 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
 
                                             ),
                                        ]),
-                                  x=0.9, y=1.1
+                                  x=0.5, y=1.1
                               )
                               ])
-        beta_str = "β = " + str(CA.LR_T_Wp_slope * CA.density * CA.heat_capacity)
-        fig.add_annotation(dict(font=dict(color='black', size=30),
+
+        beta_str = r"$\Large{\bar\beta_{int} = " + str(CA.LR_T_Wp_slope * CA.density * CA.heat_capacity)[:6] + r"}$"
+        fig.add_annotation(dict(font=dict(color="#ff7f0e", size=30),
                                 font_family="Garamound",
                                 x=0,
                                 y=1.1,
@@ -1612,10 +1607,6 @@ def save_data_and_report_thermal(CA, exp_num, parameters, bar_num):
                                 xanchor='left',
                                 xref="paper",
                                 yref="paper",
-                                bordercolor="#c7c7c7",
-                                borderwidth=2,
-                                borderpad=4,
-                                bgcolor="#ff7f0e",
                                 opacity=0.8
                                 ))
 

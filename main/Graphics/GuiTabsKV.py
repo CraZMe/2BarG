@@ -496,7 +496,7 @@ MDBoxLayout:
         id: heat_capacity
         opacity: 0
         font_name_hint_text: app.text_font
-        hint_text:  "Heat Capacity [kJ/kgK]"
+        hint_text:  "Heat Capacity [J/kgC]"
         multiline:  False
         mode: "rectangle"
         on_text_validate:   app.ButtonAction_update_parameter("specimen", 13, self)
