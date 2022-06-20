@@ -185,7 +185,8 @@ class UserInterface(MDApp):
             This functions builds the actual GUI, and most of it is graphic configuration of themes, buttons and screens.
         """
         # Set color themes and colors:
-
+        self.title = "2BarG"
+        self.icon = "images/2BarG_emblem.png"
         self.theme_cls.primary_palette = "Red"
         self.theme_cls.material_style = "M3"
         self.theme_cls.primary_hue = "A100"

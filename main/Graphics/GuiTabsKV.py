@@ -35,12 +35,18 @@ MDBoxLayout:
     md_bg_color: app.light_or_dark       
     MDLabel:
         pos_hint:  {'center_x': .5, 'center_y': .7}
-        text:   "developed by Tzvi Gershanik, Itay Levin & Daniel Rittel."
-        font_size:  14
+        text:   "developed by Tzvi Gershanik, Itay Levin, Gil Gleb Goviazin & Daniel Rittel."
+        font_size:  12
         halign: "center"
         font_name: app.text_font
 
-
+    MDLabel:
+        pos_hint:  {'center_x': .5, 'center_y': .075}
+        text:   "v1.1.4"
+        font_size:  14
+        halign: "center"
+        font_name: app.text_font
+    
     Image:
         source: "images/2BarG.png"
         pos_hint: {"center_x": 0.5, "center_y":0.8}

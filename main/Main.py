@@ -1,7 +1,5 @@
 import sys
 
-from kivymd.uix.textfield import MDTextField
-
 from main.Graphics.GraphicInterface import UserInterface
 
 from kivy.core.window import Window
@@ -17,7 +15,7 @@ Notes:
 """
 
 Window.size = (900, 850)
-Window.icon = "/2BarG_emblem.png"
+Window.icon = "2BarG_emblem.ico"
 Window.title = "2BarG"
 Window.top = 100
 Window.left = 500
