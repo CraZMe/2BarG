@@ -72,8 +72,8 @@ MDBoxLayout:
         MDLabel:
             halign: "justify"
             text: app.about_dfl
-            font_name: "GARA"
-            font_size: 18
+            font_name: app.text_font
+            font_size: 16
 
 <ParametersTab>
     md_bg_color: app.light_or_dark   

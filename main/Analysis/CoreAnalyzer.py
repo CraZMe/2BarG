@@ -110,7 +110,6 @@ class CoreAnalyzer:
             self.TC_CAL = TwoDimVec([TC_CAL[i][1] for i in range(len(TC_CAL))],
                                     [TC_CAL[i][0] for i in range(len(TC_CAL))])
 
-
         # Extract Time Per Point from the data.
         self.tpp = self.incid.x[1] - self.incid.x[0]
 

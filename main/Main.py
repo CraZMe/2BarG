@@ -1,4 +1,7 @@
+import os
 import sys
+
+from kivy.resources import resource_add_path, resource_find
 
 from main.Graphics.GraphicInterface import UserInterface
 
@@ -20,10 +23,8 @@ def resize(*args):
 
 Window.bind(on_resize=resize)
 
-#   The following will hide the CMD window when the program is running.
-if sys.platform == "win32":
-    import ctypes
 
-    ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
-
-UserInterface().run()
+if __name__ == '__main__':
+    if hasattr(sys, '_MEIPASS'):
+        resource_add_path(os.path.join(sys._MEIPASS))
+    UserInterface().run()
