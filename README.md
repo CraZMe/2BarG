@@ -18,7 +18,7 @@ The current version (1.1.0) has been rearranged in a more modular architecture, 
 2BarG was developed in Python, using the Kivymd GUI. The following libraries **must** be installed for full operation of the software:
 
 * Kivy
-* Kivymd
+* Kivymd (0.104.2)
 * Numpy
 * Pandas
 * SciPy
