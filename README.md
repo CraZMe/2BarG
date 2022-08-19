@@ -14,6 +14,9 @@ Furthermore, analysis of thermal effects is being developed and will be availabl
 The first version's (1.0.0) code is available in my other repository - 2BarG_V1.
 The current version (1.1.0) has been rearranged in a more modular architecture, which can be viewed schematically in the included Flow hart. 
  
+ **Linux / Mac Users**
+There exists a branch called Linux, which should can be used in linux distributions / mac OS. Note that this version is different than the main one (for windows) since it does not support WFT files (specifically - their conversion into FLT (txt) files done by the WFT2FLT.EXE program that can be found in the 2BarG Program Files folder).  
+
 # General Info & Required Libraries
 2BarG was developed in Python, using the Kivymd GUI. The following libraries **must** be installed for full operation of the software:
 
