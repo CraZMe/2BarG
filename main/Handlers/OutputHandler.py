@@ -99,6 +99,13 @@ def make_report(CA, exp_num, parameters, bar_num):
         fig.add_trace(go.Scatter(name=r'$\large{Transmitted}..$', y=CA.trans_og.y, x=CA.trans_og.x,
                                  mode='lines', visible=False))
 
+        fig.add_vline(x=CA.incid_og.x[CA.cropping_points[0]], line_width=1, line_dash="dash", line_color="blue")
+        fig.add_vline(x=CA.incid_og.x[CA.cropping_points[1]], line_width=1, line_dash="dash", line_color="blue")
+        fig.add_vline(x=CA.incid_og.x[CA.cropping_points[2]], line_width=1, line_dash="dash", line_color="blue")
+        fig.add_vline(x=CA.incid_og.x[CA.cropping_points[3]], line_width=1, line_dash="dash", line_color="blue")
+        fig.add_vline(x=CA.trans_og.x[CA.cropping_points[4]], line_width=1, line_dash="dash", line_color="orange")
+        fig.add_vline(x=CA.trans_og.x[CA.cropping_points[5]], line_width=1, line_dash="dash", line_color="orange")
+
         fig.add_trace(go.Scatter(name=r'$\large{Incident}$', y=CA.corr_incid.y, x=micro_sec,
                                  mode='lines', visible=False))
         fig.add_trace(go.Scatter(name=r'$\large{Transmitted}..$', y=CA.corr_trans.y, x=micro_sec,
@@ -126,7 +133,8 @@ def make_report(CA, exp_num, parameters, bar_num):
         fig.add_trace(go.Scatter(name=r'$\large{V_{out}}$', y=CA.v_out, x=micro_sec,
                                  mode='lines', visible=False))
 
-        buttons = list([dict(label='Raw Signals',
+        buttons = list([
+             dict(label='Raw Signals',
                   method='update',
                   args=[{'visible': [True, True] + [False] * 11},
                         {'xaxis': {'title': r'Time [μs]'},
@@ -150,7 +158,7 @@ def make_report(CA, exp_num, parameters, bar_num):
              dict(label='Stress - Strain',
                   method='update',
                   args=[{'visible': [False] * 7 + [True] * 2 + [False] * 4},
-                        {'xaxis': {'title': r'Strain$'},
+                        {'xaxis': {'title': r'Strain'},
                          'yaxis': {'title': 'Stress [MPa]'},
                          'showlegend': True}]),
 

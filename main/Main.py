@@ -1,7 +1,7 @@
 import os
 import sys
 
-from kivy.resources import resource_add_path, resource_find
+from kivy.resources import resource_add_path
 
 from main.Graphics.GraphicInterface import UserInterface
 
