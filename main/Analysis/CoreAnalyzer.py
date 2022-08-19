@@ -180,12 +180,12 @@ class CoreAnalyzer:
             """
             self.user_interface.update_logger("Automatic Cropping Initialized...")
             #   Analyze only one given experiment
-            incid, trans, refle, IR_EXP = SignalProcessing.auto_crop(self.user_interface.update_logger, self)
+            incid, trans, refle, IR_EXP, cropping_points = SignalProcessing.auto_crop(self.user_interface.update_logger, self)
             self.incid = self.incid.create_absolute_copy(incid)
             self.trans = self.trans.create_absolute_copy(trans)
             self.refle = self.refle.create_absolute_copy(refle)
             self.IR_EXP = self.IR_EXP.create_absolute_copy(IR_EXP)
-
+            self.cropping_points = cropping_points
             return self.single_analysis()
 
     def single_analysis(self):

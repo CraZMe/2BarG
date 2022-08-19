@@ -130,12 +130,13 @@ def auto_crop(update_logger, CA):
     #   Obtaining these points is crucial for determining where to crop the signal to export the different waves.
 
     #   For incident wave:
+    incid_threshold = 0.05 * max_incid
     incid_before_idx = peaks_incid[0]
-    while K * CA.incid_og.y[incid_before_idx] < 0:
+    while K * CA.incid_og.y[incid_before_idx] < - incid_threshold:
         incid_before_idx -= 1
 
     incid_after_idx = peaks_incid[0]
-    while K * CA.incid_og.y[incid_after_idx] < 0:
+    while K * CA.incid_og.y[incid_after_idx] < - incid_threshold:
         incid_after_idx += 1
 
     vcc_incid = CA.incid_og.y[incid_before_idx - CA.spacing: incid_after_idx + 2 * CA.spacing]
@@ -146,23 +147,24 @@ def auto_crop(update_logger, CA):
     signal_time = incid_after_idx - incid_before_idx
 
     #   For reflected wave:
-    before_idx = peaks_incid[1]
-    while K * CA.incid_og.y[before_idx] > 0:
-        before_idx -= 1
+    reflected_before_idx = peaks_incid[1]
+    while K * CA.incid_og.y[reflected_before_idx] > incid_threshold:
+        reflected_before_idx -= 1
 
     #   Total cropping time
-    after_idx = before_idx + signal_time
-    reflected_idx = before_idx
-    vcc_reflected = CA.incid_og.y[before_idx - CA.spacing: after_idx + 2 * CA.spacing]
-    time_reflected = CA.incid_og.x[before_idx - CA.spacing: after_idx + 2 * CA.spacing]
+    reflected_after_idx = reflected_before_idx + signal_time
+    reflected_idx = reflected_before_idx
+    vcc_reflected = CA.incid_og.y[reflected_before_idx - CA.spacing: reflected_after_idx + 2 * CA.spacing]
+    time_reflected = CA.incid_og.x[reflected_before_idx - CA.spacing: reflected_after_idx + 2 * CA.spacing]
 
     #   For transmitted wave:
-    before_idx = peaks_trans[0]
-    while K * CA.trans_og.y[before_idx] < 0:
-        before_idx -= 1
+    trans_threshold = 0.01 * max_trans
+    trans_before_idx = peaks_trans[0]
+    while K * CA.trans_og.y[trans_before_idx] < - trans_threshold:
+        trans_before_idx -= 1
 
     #   Total cropping time
-    after_idx = before_idx + signal_time
+    trans_after_idx = trans_before_idx + signal_time
 
     '''
             uncomment the following to display where the cropping occurs.
@@ -177,8 +179,8 @@ def auto_crop(update_logger, CA):
     plt.show()
     '''
 
-    vcc_trans = CA.trans_og.y[before_idx - CA.spacing: after_idx + 2 * CA.spacing]
-    time_trans = CA.trans_og.x[before_idx - CA.spacing: after_idx + 2 * CA.spacing]
+    vcc_trans = CA.trans_og.y[trans_before_idx - CA.spacing: trans_after_idx + 2 * CA.spacing]
+    time_trans = CA.trans_og.x[trans_before_idx - CA.spacing: trans_after_idx + 2 * CA.spacing]
 
     zeroing([time_incid, time_reflected, time_trans])
 
@@ -213,7 +215,10 @@ def auto_crop(update_logger, CA):
     refle = TwoDimVec(time_reflected, vcc_reflected)
     IR_EXP = TwoDimVec()
     update_logger("\nAutomatic Cropping CMPLT.")
-    return incid, trans, refle, IR_EXP
+    cropping_points = [incid_before_idx, incid_after_idx,
+                       reflected_before_idx, reflected_after_idx,
+                       trans_before_idx, trans_after_idx]
+    return incid, trans, refle, IR_EXP, cropping_points
 
 
 def mean_of_signal(update_logger, signal, prominence_percent, mode, spacing):
