@@ -9,7 +9,7 @@ def set_path_input(path, two_bar_g_path, thermal_analysis):
         This functions uses the chosen (or default) path given to the main program to do the following:
         The path folder chosen shall be one with raw experiment data in 'WFT' files,
         if this condition is not satisfied then this function will do nothing (can also mean that this function
-        has already ran in the given path).
+        has already run in the given path).
         If it is satisfied, then this function will convert the WFT files into FLT files using WFT2FLT.EXE
         and sort everything into experiments, divided by folders (EXP #1, EXP #2 ..)
         After everything is sorted, this function will create
@@ -23,53 +23,16 @@ def set_path_input(path, two_bar_g_path, thermal_analysis):
                 os.chdir(path)  # Run cmd through the given path.
                 files = os.listdir(path)  # make a list of file names from the path directory
 
-                '''
-                    The following loop will check if the data files are in WFT format.
-                    If so, a conversion to FLT file type will be made using the WFT2FLT.EXE program.   
-                '''
-
-                apply_WFT2FLT = False
-                for file in files:
-                    file_name, file_type = os.path.splitext(file)
-                    file_type = file_type[1:]
-
-                    if file_type == "WFT":
-                        exp_file_type = "FLT"
-                        apply_WFT2FLT = True
-                        break
-
                 if "Exp #1" not in files:
                     # If there is at least one experiment folder then the
-                    # WFT2FLT program has already been executed before,
+                    # program has already been executed before,
                     # and there is no need to run it again.
                     # This condition can save startup time.
-
-                    os.chdir(two_bar_g_path)  # Run cmd from this program's (main) path.
-
-                    if apply_WFT2FLT:
-                        WFT_exists = 1
-                        WFT2FLT_path = shutil.copy("ProgramFiles/WFT2FLTN.EXE", path)  # Copy the WFT2FLT program into the given path.
-                        WFT2FLT_command_path = WFT2FLT_path + " -dir=."  # This is the full command that is used in the cmd.
-
-                        os.chdir(path)  # Run cmd through the given path.
-                        os.system(WFT2FLT_command_path)  # Run the WFT2FLT program using cmd.
-                        os.remove(WFT2FLT_path)  # Remove the WFT2FLT.EXE file from the path.
-
-                        files = os.listdir(path)
-                        os.makedirs(path + '/' + "Original WFT Files")
-                        for file in files:
-                            file_name, file_type = os.path.splitext(file)
-                            file_type = file_type[1:]
-                            if file_type == "WFT":
-                                shutil.move(path + "/" + file, path + '/' + "Original WFT Files")
-
-                    else:
-                        WFT_exists = 0
 
                     os.chdir(path)  # Run cmd through the given path.
 
                     files = os.listdir(path)
-                    num_of_experiments = int((len(files) - WFT_exists) / 2)
+                    num_of_experiments = int((len(files)) / 2)
 
                     #   Check if there is already an existing report in the path folder.
                     #   if so, don't include it in the experiments count.
@@ -90,7 +53,7 @@ def set_path_input(path, two_bar_g_path, thermal_analysis):
                         file_type = file_type[1:]
 
                         if file_type != "":
-
+                            exp_file_type = file_type
                             exp_num += 1
                             os.makedirs(path + '/' + "Exp #" + str(exp_num))
 
@@ -182,46 +145,21 @@ def set_path_input_thermal(path, two_bar_g_path):
             os.chdir(path)  # Run cmd through the given path.
             files = os.listdir(path)  # make a list of file names from the path directory
 
-            '''
-                The following loop will check if the data files are in WFT format.
-                If so, a conversion to FLT file type will be made using the WFT2FLT.EXE program.   
-            '''
-            apply_WFT2FLT = False
-            for file in files:
-                file_name, file_type = os.path.splitext(file)
-                file_type = file_type[1:]
-
-                if file_type == "WFT":
-                    apply_WFT2FLT = True
-                    break
-
             if "Exp #1" not in files:
                 # If there is at least one experiment folder then the WFT2FLT program has already been executed before,
                 # and there is no need to run it again. This condition can save startup time.
 
                 os.chdir(two_bar_g_path)  # Run cmd from this program's (main) path.
 
-                if apply_WFT2FLT:
-                    WFT_exists = 1
-                    WFT2FLT_path = shutil.copy("ProgramFiles/WFT2FLTN.EXE", path)  # Copy the WFT2FLT program into the given path.
-                    WFT2FLT_command_path = WFT2FLT_path + " -dir=."  # This is the full command that is used in the cmd.
-
-                    os.chdir(path)  # Run cmd through the given path.
-                    os.system(WFT2FLT_command_path)  # Run the WFT2FLT program using cmd.
-                    os.remove(WFT2FLT_path)  # Remove the WFT2FLT.EXE file from the path.
-
-                    files = os.listdir(path)
-                    os.makedirs(path + '/' + "Original WFT Files")
-                    for file in files:
-                        file_name, file_type = os.path.splitext(file)
-                        file_type = file_type[1:]
-                        if file_type == "WFT":
-                            shutil.move(path + "/" + file, path + '/' + "Original WFT Files")
-
-                if file_type != "WFT":
-                    file_type = file_type
-                else:
-                    file_type = "FLT"
+                files = os.listdir(path + "/Exp #1")
+                for file in files:
+                    #   The name of the folder inside the first experiment
+                    #   will be the name of the file type that is used.
+                    file_name, file_type = os.path.splitext(file)
+                    file_type = file_type[1:]
+                    if file_type == '':
+                        exp_file_type = file_name
+                        break
 
             return 1, file_type
 
@@ -244,7 +182,7 @@ def choose_path():
             files = os.listdir(path)  # make a list of file names from the path directory
 
             #   These are the only file types accepted by main
-            valid_file_types = ["WFT", "FLT", "txt", "xlsx", "csv"]
+            valid_file_types = ["FLT", "txt", "xlsx", "csv"]
 
             #   Search for files that are not acceptable:
             invalid_folder = False

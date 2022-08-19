@@ -419,7 +419,8 @@ class UserInterface(MDApp):
         try:
             if path is not None:
                 self.set_path_folder(path)
-        except:
+        except Exception as e:
+            self.update_logger("set_path_folder: " + str(e))
             self.error_message()
 
     def ButtonAction_select_data_file(self, signal_name):
