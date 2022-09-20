@@ -139,29 +139,41 @@ def auto_crop(update_logger, CA):
     while K * CA.incid_og.y[incid_after_idx] < - incid_threshold:
         incid_after_idx += 1
 
-    vcc_incid = CA.incid_og.y[incid_before_idx - CA.spacing: incid_after_idx + 2 * CA.spacing]
-    time_incid = CA.incid_og.x[incid_before_idx - CA.spacing: incid_after_idx + 2 * CA.spacing]
+    vcc_incid = CA.incid_og.y[incid_before_idx - CA.spacing: incid_after_idx + CA.spacing]
+    time_incid = CA.incid_og.x[incid_before_idx - CA.spacing: incid_after_idx + CA.spacing]
 
     #   We want all three waves to be of the same vector size, so we will use the total time of the incident wave,
     #   and only find where the other two waves begin.
     signal_time = incid_after_idx - incid_before_idx
 
     #   For reflected wave:
-    reflected_before_idx = peaks_incid[1]
-    while K * CA.incid_og.y[reflected_before_idx] > incid_threshold:
-        reflected_before_idx -= 1
+    #reflected_before_idx = peaks_incid[1]
+    #while K * CA.incid_og.y[reflected_before_idx] > incid_threshold:
+    #    reflected_before_idx -= 1
+
+    # Calculate the beginning of reflected wave based on 
+    # first strain gage position and soun velocity
+
+    reflected_before_idx = incid_before_idx + int(CA.first_gage*2/CA.sound_velocity*2e+6)
 
     #   Total cropping time
     reflected_after_idx = reflected_before_idx + signal_time
     reflected_idx = reflected_before_idx
-    vcc_reflected = CA.incid_og.y[reflected_before_idx - CA.spacing: reflected_after_idx + 2 * CA.spacing]
-    time_reflected = CA.incid_og.x[reflected_before_idx - CA.spacing: reflected_after_idx + 2 * CA.spacing]
+    vcc_reflected = CA.incid_og.y[reflected_before_idx - CA.spacing: reflected_after_idx + CA.spacing]
+    time_reflected = CA.incid_og.x[reflected_before_idx - CA.spacing: reflected_after_idx + CA.spacing]
 
     #   For transmitted wave:
-    trans_threshold = 0.01 * max_trans
-    trans_before_idx = peaks_trans[0]
-    while K * CA.trans_og.y[trans_before_idx] < - trans_threshold:
-        trans_before_idx -= 1
+    #trans_threshold = 0.01 * max_trans
+    #trans_before_idx = peaks_trans[0]
+    #while K * CA.trans_og.y[trans_before_idx] < - trans_threshold:
+    #    trans_before_idx -= 1
+
+    # Calculate the beginning of transition wave based on 
+    # first strain gage position, second strain gage position
+    # and soun velocity, I add also length of the specimen
+    # better if it will be sound velocity of the sample, but we don't know it
+
+    trans_before_idx = incid_before_idx + int((CA.first_gage+CA.second_gage+CA.specimen_length)/CA.sound_velocity*2e+6)
 
     #   Total cropping time
     trans_after_idx = trans_before_idx + signal_time
@@ -179,8 +191,8 @@ def auto_crop(update_logger, CA):
     plt.show()
     '''
 
-    vcc_trans = CA.trans_og.y[trans_before_idx - CA.spacing: trans_after_idx + 2 * CA.spacing]
-    time_trans = CA.trans_og.x[trans_before_idx - CA.spacing: trans_after_idx + 2 * CA.spacing]
+    vcc_trans = CA.trans_og.y[trans_before_idx - CA.spacing: trans_after_idx + CA.spacing]
+    time_trans = CA.trans_og.x[trans_before_idx - CA.spacing: trans_after_idx + CA.spacing]
 
     zeroing([time_incid, time_reflected, time_trans])
 
