@@ -102,6 +102,12 @@ class CoreAnalyzer:
         self.trans = TwoDimVec([trans[i][1] for i in range(len(trans))],
                                [trans[i][0] for i in range(len(trans))]).force_signal_to_start_at_zero()
 
+        ## I need to be sure that incid is realy incid and transmitted realy transmitted
+        ## Logic is next: min(incident) signal must be less than min(trans)
+
+        if min(self.incid.y) > min(self.trans.y):
+            self.incid.y, self.trans.y = self.trans.y, self.incid.y
+
         if thermal_analysis:
             self.IR_EXP = TwoDimVec([IR_EXP[i][1] for i in range(len(IR_EXP))],
                                     [IR_EXP[i][0] for i in range(len(IR_EXP))]).force_signal_to_start_at_zero()
