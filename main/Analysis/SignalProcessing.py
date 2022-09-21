@@ -163,10 +163,10 @@ def auto_crop(update_logger, CA):
     time_reflected = CA.incid_og.x[reflected_before_idx - CA.spacing: reflected_after_idx + CA.spacing]
 
     #   For transmitted wave:
-    #trans_threshold = 0.01 * max_trans
-    #trans_before_idx = peaks_trans[0]
-    #while K * CA.trans_og.y[trans_before_idx] < - trans_threshold:
-    #    trans_before_idx -= 1
+    trans_threshold = 0.01 * max_trans
+    trans_before_idx_real = peaks_trans[0]
+    while K * CA.trans_og.y[trans_before_idx_real] < - trans_threshold:
+        trans_before_idx_real -= 1
 
     # Calculate the beginning of transition wave based on 
     # first strain gage position, second strain gage position
@@ -175,8 +175,13 @@ def auto_crop(update_logger, CA):
 
     trans_before_idx = incid_before_idx + int((CA.first_gage+CA.second_gage+CA.specimen_length)/CA.sound_velocity*2e+6)
 
+    # Here I add the CA.trans_shift parameter to understand how many points
+    # between transmitted signal risng and its beginning by sound velocity calculation
+    # It is important to cut the stress-strain curve
+
     #   Total cropping time
     trans_after_idx = trans_before_idx + signal_time
+    CA.trans_shift = trans_before_idx_real - trans_before_idx
 
     '''
             uncomment the following to display where the cropping occurs.

@@ -70,8 +70,10 @@ def final_calculation(update_logger, CA):
     if idx == 0:
         idx = len(eng_strain)
 
-    eng_strain = abs(eng_strain[:idx])
-    eng_stress = eng_stress[:idx]
+    # Here I am cut the stress-strain curves and shift it according "CA.trans_shift" parameter    
+
+    eng_strain = abs(eng_strain[CA.trans_shift+CA.spacing:idx]) - abs(eng_strain[CA.trans_shift+CA.spacing])
+    eng_stress = eng_stress[CA.trans_shift+CA.spacing:idx] - eng_stress[CA.trans_shift+CA.spacing]
 
     #   Calculate the average (mean) striker velocity:
     CA.mean_striker_velocity = SignalProcessing.mean_of_signal(update_logger,
@@ -127,7 +129,7 @@ def final_calculation(update_logger, CA):
     else:
         K = 1
 
-    for i in range(idx):
+    for i in range(len(eng_strain)):
         surf_spec_inst.append(abs(specimen_surface / (1 + K * strain[i])))
         true_stress.append(abs(eng_stress[i] * (1 + K * strain[i])))
         true_strain.append(abs(np.log(1 + K * strain[i])))
